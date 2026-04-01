@@ -1,5 +1,5 @@
-import { FeaturedPropertyCard } from "@/components/home/FeaturedPropertyCard";
-import { PropertyCard } from "@/components/home/PropertyCard";
+import { FeaturedPropertyCard } from "@/components/home/featured-property-card";
+import { PropertyCard } from "@/components/home/property-card";
 import { mockProperties } from "@/data/mockProperties";
 
 export default function Home() {

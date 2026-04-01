@@ -1,0 +1,1 @@
+export { FeaturedPropertyCard } from "./FeaturedPropertyCard";
