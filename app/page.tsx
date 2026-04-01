@@ -27,7 +27,7 @@ export default function Home() {
             </div>
             <input
               type="text"
-              className="block w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white text-nordic-dark shadow-soft placeholder-nordic-muted/60 focus:ring-2 focus:ring-mosque focus:bg-white:bg-white/10 transition-all text-lg outline-none"
+              className="block w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white text-nordic-dark shadow-soft placeholder-nordic-muted/60 focus:ring-2 focus:ring-mosque focus:bg-white/10 transition-all text-lg outline-none"
               placeholder="Search by city, neighborhood, or address..."
             />
             <button className="absolute inset-y-2 right-2 px-6 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20">
@@ -53,7 +53,7 @@ export default function Home() {
             </button>
 
             <div className="w-px h-6 bg-nordic-dark/10 mx-2"></div>
-            <button className="whitespace-nowrap flex items-center gap-1 px-4 py-2 rounded-full text-nordic-dark font-medium text-sm hover:bg-black/5:bg-white/5 transition-colors">
+            <button className="whitespace-nowrap flex items-center gap-1 px-4 py-2 rounded-full text-nordic-dark font-medium text-sm hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
               <span className="material-icons text-base">tune</span> Filters
             </button>
           </div>
@@ -86,8 +86,8 @@ export default function Home() {
           </div>
           <div className="hidden md:flex bg-white p-1 rounded-lg">
             <button className="px-4 py-1.5 rounded-md text-sm font-medium bg-nordic-dark text-white shadow-sm">All</button>
-            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark:text-white transition-colors">Buy</button>
-            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark:text-white transition-colors">Rent</button>
+            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark dark:hover:text-white transition-colors">Buy</button>
+            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark dark:hover:text-white transition-colors">Rent</button>
           </div>
         </div>
 
