@@ -1,10 +1,51 @@
 import { FeaturedPropertyCard } from "@/components/home/featured-property-card";
 import { PropertyCard } from "@/components/home/property-card";
-import { mockProperties } from "@/data/mockProperties";
+import { supabase } from "@/utils/supabase";
+import { Property } from "@/types";
+import Link from "next/link";
 
-export default function Home() {
-  const featuredProperties = mockProperties.filter(p => p.isFeatured);
-  const standardProperties = mockProperties.filter(p => !p.isFeatured);
+export default async function Home(props: { searchParams: Promise<{ page?: string }> }) {
+  const searchParams = await props.searchParams;
+  const page = parseInt(searchParams.page || '1', 10);
+  const PAGE_SIZE = 8;
+  const from = (page - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
+  const { data: featuredData } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('is_featured', true);
+
+  const { data: propertiesData } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('is_featured', false)
+    .range(from, to)
+    .order('id', { ascending: true });
+
+  const { count } = await supabase
+    .from('properties')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_featured', false);
+
+  const totalPages = count !== null ? Math.ceil(count / PAGE_SIZE) : 0;
+
+  const mapProperty = (p: any): Property => ({
+    id: p.id,
+    title: p.title,
+    location: p.location,
+    price: p.price,
+    beds: p.beds,
+    baths: p.baths,
+    area: p.area,
+    imageUrl: p.image_url,
+    isFeatured: p.is_featured,
+    tag: p.tag,
+    type: p.type
+  });
+
+  const featuredProperties = (featuredData || []).map(mapProperty);
+  const standardProperties = (propertiesData || []).map(mapProperty);
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10">
@@ -97,10 +138,39 @@ export default function Home() {
           ))}
         </div>
         
-        <div className="mt-12 text-center">
-          <button className="px-8 py-3 bg-white border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark font-medium rounded-lg transition-all hover:shadow-md">
-            Load more properties
-          </button>
+        <div className="mt-12 flex justify-center items-center gap-2">
+          {page > 1 && (
+            <Link href={`/?page=${page - 1}`} scroll={false}>
+              <button className="flex items-center justify-center p-3 bg-white rounded-lg border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark transition-all">
+                <span className="material-icons text-sm">chevron_left</span>
+              </button>
+            </Link>
+          )}
+          
+          {Array.from({ length: totalPages }).map((_, i) => {
+            const pageNum = i + 1;
+            return (
+              <Link key={pageNum} href={`/?page=${pageNum}`} scroll={false}>
+                <button
+                  className={`flex items-center justify-center w-12 h-12 rounded-lg text-sm font-medium transition-all ${
+                    pageNum === page
+                      ? "bg-nordic-dark text-white border-transparent shadow-md hover:bg-nordic-dark/90"
+                      : "bg-white border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              </Link>
+            );
+          })}
+
+          {page < totalPages && (
+            <Link href={`/?page=${page + 1}`} scroll={false}>
+              <button className="flex items-center justify-center p-3 bg-white rounded-lg border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark transition-all">
+                <span className="material-icons text-sm">chevron_right</span>
+              </button>
+            </Link>
+          )}
         </div>
       </section>
     </main>
