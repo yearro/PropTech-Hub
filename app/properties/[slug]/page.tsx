@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${data.title} | LuxeEstate`,
     description: `View details for ${data.title} located at ${data.location}. Price: $${data.price}`,
     openGraph: {
-      images: data.images?.length > 0 ? data.images : (data.image_url ? [data.image_url] : []),
+      images: data.images || [],
     }
   };
 }
@@ -48,11 +48,11 @@ export default async function PropertyDetails({ params }: Props) {
   // Handle camelCase mapping vs raw db snake_case
   const property: Property = {
     ...data,
-    imageUrl: data.image_url,
     isFeatured: data.is_featured,
+    images: data.images || []
   };
 
-  const images = data.images && data.images.length > 0 ? data.images : (property.imageUrl ? [property.imageUrl] : []);
+  const images = property.images;
 
   return (
     <div className="bg-background-light min-h-screen text-nordic-dark selection:bg-mosque/20">

@@ -38,12 +38,11 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
     beds: p.beds,
     baths: p.baths,
     area: p.area,
-    imageUrl: p.image_url,
+    images: p.images,
     isFeatured: p.is_featured,
     tag: p.tag,
     type: p.type,
-    slug: p.slug,
-    images: p.images
+    slug: p.slug
   });
 
   const featuredProperties = (featuredData || []).map(mapProperty);

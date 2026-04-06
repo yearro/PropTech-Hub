@@ -8,7 +8,7 @@ export function FeaturedPropertyCard({ property }: { property: Property }) {
       <div className="aspect-[4/3] w-full overflow-hidden relative">
         <Image
           alt={property.title}
-          src={property.imageUrl}
+          src={property.images[0]}
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

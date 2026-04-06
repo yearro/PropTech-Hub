@@ -15,7 +15,7 @@ async function seed() {
     beds: p.beds,
     baths: p.baths,
     area: p.area,
-    image_url: p.imageUrl,
+    images: p.images,
     is_featured: p.isFeatured,
     tag: p.tag || null,
     type: p.type
