@@ -41,7 +41,9 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
     imageUrl: p.image_url,
     isFeatured: p.is_featured,
     tag: p.tag,
-    type: p.type
+    type: p.type,
+    slug: p.slug,
+    images: p.images
   });
 
   const featuredProperties = (featuredData || []).map(mapProperty);

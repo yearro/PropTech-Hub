@@ -10,4 +10,6 @@ export interface Property {
   isFeatured: boolean;
   tag?: string; 
   type: 'FOR SALE' | 'FOR RENT';
+  slug?: string;
+  images?: string[];
 }

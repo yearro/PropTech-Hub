@@ -1,9 +1,10 @@
 import { Property } from "@/types";
 import Image from "next/image";
+import Link from "next/link";
 
 export function PropertyCard({ property }: { property: Property }) {
   return (
-    <article className="bg-white rounded-xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 group cursor-pointer h-full flex flex-col">
+    <Link href={`/properties/${property.slug || property.id}`} className="bg-white rounded-xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 group cursor-pointer h-full flex flex-col block">
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
           alt={property.title}
@@ -46,6 +47,6 @@ export function PropertyCard({ property }: { property: Property }) {
           </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
