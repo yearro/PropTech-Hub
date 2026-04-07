@@ -8,7 +8,7 @@ export interface Property {
   area: number;
   isFeatured: boolean;
   tag?: string; 
-  type: 'FOR SALE' | 'FOR RENT';
+  type: 'House' | 'Apartment' | 'Villa' | 'Penthouse' | 'Townhouse' | 'Condo' | string;
   slug?: string;
   images: string[];
 }

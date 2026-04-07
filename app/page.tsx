@@ -3,10 +3,30 @@ import { PropertyCard } from "@/components/home/property-card";
 import { supabase } from "@/utils/supabase";
 import { Property } from "@/types";
 import Link from "next/link";
+import { FiltersAction } from "@/components/home/filters-action";
 
-export default async function Home(props: { searchParams: Promise<{ page?: string }> }) {
+import { MainSearch } from "@/components/home/main-search";
+
+export default async function Home(props: { 
+  searchParams: Promise<{ 
+    page?: string;
+    location?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    type?: string;
+    beds?: string;
+    baths?: string;
+  }> 
+}) {
   const searchParams = await props.searchParams;
   const page = parseInt(searchParams.page || '1', 10);
+  const location = searchParams.location;
+  const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice, 10) : undefined;
+  const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice, 10) : undefined;
+  const type = searchParams.type;
+  const beds = searchParams.beds ? parseInt(searchParams.beds, 10) : undefined;
+  const baths = searchParams.baths ? parseInt(searchParams.baths, 10) : undefined;
+
   const PAGE_SIZE = 8;
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
@@ -16,17 +36,31 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
     .select('*')
     .eq('is_featured', true);
 
-  const { data: propertiesData } = await supabase
-    .from('properties')
-    .select('*')
-    .eq('is_featured', false)
+  let query = supabase.from('properties').select('*', { count: 'exact' }).eq('is_featured', false);
+
+  if (location) {
+    // Basic ilike on location or title
+    query = query.or(`location.ilike.%${location}%,title.ilike.%${location}%`);
+  }
+  if (minPrice) {
+    query = query.gte('price', minPrice);
+  }
+  if (maxPrice) {
+    query = query.lte('price', maxPrice);
+  }
+  if (type && type !== 'Any Type') {
+    query = query.ilike('type', type);
+  }
+  if (beds) {
+    query = query.gte('beds', beds);
+  }
+  if (baths) {
+    query = query.gte('baths', baths);
+  }
+
+  const { data: propertiesData, count } = await query
     .range(from, to)
     .order('id', { ascending: true });
-
-  const { count } = await supabase
-    .from('properties')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_featured', false);
 
   const totalPages = count !== null ? Math.ceil(count / PAGE_SIZE) : 0;
 
@@ -48,9 +82,21 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
   const featuredProperties = (featuredData || []).map(mapProperty);
   const standardProperties = (propertiesData || []).map(mapProperty);
 
+  const buildPageUrl = (p: number) => {
+    const params = new URLSearchParams();
+    if (location) params.set("location", location);
+    if (minPrice) params.set("minPrice", minPrice.toString());
+    if (maxPrice) params.set("maxPrice", maxPrice.toString());
+    if (type) params.set("type", type);
+    if (beds) params.set("beds", beds.toString());
+    if (baths) params.set("baths", baths.toString());
+    params.set("page", p.toString());
+    return `/?${params.toString()}`;
+  };
+
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10">
-      <section className="py-12 md:py-16">
+    <main className="mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10">
+      <section className="py-12 md:py-16 w-full max-w-[950px] mx-auto">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-nordic-dark leading-tight">
             Find your{" "}
@@ -61,48 +107,41 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
             .
           </h1>
 
-          <div className="relative group max-w-2xl mx-auto">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <span className="material-icons text-nordic-muted text-2xl group-focus-within:text-mosque transition-colors">
-                search
-              </span>
-            </div>
-            <input
-              type="text"
-              className="block w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white text-nordic-dark shadow-soft placeholder-nordic-muted/60 focus:ring-2 focus:ring-mosque focus:bg-white/10 transition-all text-lg outline-none"
-              placeholder="Search by city, neighborhood, or address..."
-            />
-            <button className="absolute inset-y-2 right-2 px-6 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20">
-              Search
-            </button>
-          </div>
+          <MainSearch />
 
           <div className="flex items-center justify-center gap-3 overflow-x-auto hide-scroll py-2 px-4 -mx-4">
-            <button className="whitespace-nowrap px-5 py-2 rounded-full bg-nordic-dark text-white text-sm font-medium shadow-lg shadow-nordic-dark/10 transition-transform hover:-translate-y-0.5">
-              All
-            </button>
-            <button className="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5">
-              House
-            </button>
-            <button className="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5">
-              Apartment
-            </button>
-            <button className="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5">
-              Villa
-            </button>
-            <button className="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5">
-              Penthouse
-            </button>
-
+            <Link href="/" scroll={false}>
+              <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${!type || type === 'Any Type' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
+                All
+              </button>
+            </Link>
+            <Link href="/?type=House" scroll={false}>
+              <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${type === 'House' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
+                House
+              </button>
+            </Link>
+            <Link href="/?type=Apartment" scroll={false}>
+              <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${type === 'Apartment' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
+                Apartment
+              </button>
+            </Link>
+            <Link href="/?type=Villa" scroll={false}>
+              <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${type === 'Villa' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
+                Villa
+              </button>
+            </Link>
+            <Link href="/?type=Penthouse" scroll={false}>
+              <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${type === 'Penthouse' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
+                Penthouse
+              </button>
+            </Link>
             <div className="w-px h-6 bg-nordic-dark/10 mx-2"></div>
-            <button className="whitespace-nowrap flex items-center gap-1 px-4 py-2 rounded-full text-nordic-dark font-medium text-sm hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-              <span className="material-icons text-base">tune</span> Filters
-            </button>
+            <FiltersAction />
           </div>
         </div>
       </section>
 
-      <section className="mb-16">
+      <section className="mb-16 w-full max-w-[950px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="text-2xl font-light text-nordic-dark">Featured Collections</h2>
@@ -113,14 +152,14 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
           </a>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           {featuredProperties.map((property) => (
             <FeaturedPropertyCard key={property.id} property={property} />
           ))}
         </div>
       </section>
 
-      <section>
+      <section className="w-full max-w-[950px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="text-2xl font-light text-nordic-dark">New in Market</h2>
@@ -133,7 +172,7 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start auto-rows-max">
           {standardProperties.map(property => (
             <PropertyCard key={property.id} property={property} />
           ))}
@@ -141,7 +180,7 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
         
         <div className="mt-12 flex justify-center items-center gap-2">
           {page > 1 && (
-            <Link href={`/?page=${page - 1}`} scroll={false}>
+            <Link href={buildPageUrl(page - 1)} scroll={false}>
               <button className="flex items-center justify-center p-3 bg-white rounded-lg border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark transition-all">
                 <span className="material-icons text-sm">chevron_left</span>
               </button>
@@ -151,7 +190,7 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
           {Array.from({ length: totalPages }).map((_, i) => {
             const pageNum = i + 1;
             return (
-              <Link key={pageNum} href={`/?page=${pageNum}`} scroll={false}>
+              <Link key={pageNum} href={buildPageUrl(pageNum)} scroll={false}>
                 <button
                   className={`flex items-center justify-center w-12 h-12 rounded-lg text-sm font-medium transition-all ${
                     pageNum === page
@@ -166,7 +205,7 @@ export default async function Home(props: { searchParams: Promise<{ page?: strin
           })}
 
           {page < totalPages && (
-            <Link href={`/?page=${page + 1}`} scroll={false}>
+            <Link href={buildPageUrl(page + 1)} scroll={false}>
               <button className="flex items-center justify-center p-3 bg-white rounded-lg border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark transition-all">
                 <span className="material-icons text-sm">chevron_right</span>
               </button>

@@ -39,6 +39,10 @@
     src: local('SF Pro Display'), local('SFProDisplay-Regular');
   }
 
+  html {
+    overflow-y: scroll;
+  }
+
   body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
