@@ -82,6 +82,8 @@ export default async function Home(props: {
   const featuredProperties = (featuredData || []).map(mapProperty);
   const standardProperties = (propertiesData || []).map(mapProperty);
 
+  const hasFilters = !!(location || minPrice || maxPrice || (type && type !== 'Any Type') || beds || baths);
+
   const buildPageUrl = (p: number) => {
     const params = new URLSearchParams();
     if (location) params.set("location", location);
@@ -95,7 +97,7 @@ export default async function Home(props: {
   };
 
   return (
-    <main className="mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10">
+    <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10">
       <section className="py-12 md:py-16 w-full max-w-[950px] mx-auto">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-nordic-dark leading-tight">
@@ -141,23 +143,25 @@ export default async function Home(props: {
         </div>
       </section>
 
-      <section className="mb-16 w-full max-w-[950px] mx-auto">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-light text-nordic-dark">Featured Collections</h2>
-            <p className="text-nordic-muted mt-1 text-sm">Curated properties for the discerning eye.</p>
+      {!hasFilters && (
+        <section className="mb-16 w-full max-w-[950px] mx-auto">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-light text-nordic-dark">Featured Collections</h2>
+              <p className="text-nordic-muted mt-1 text-sm">Curated properties for the discerning eye.</p>
+            </div>
+            <a href="#" className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity">
+              View all <span className="material-icons text-sm">arrow_forward</span>
+            </a>
           </div>
-          <a href="#" className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity">
-            View all <span className="material-icons text-sm">arrow_forward</span>
-          </a>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {featuredProperties.map((property) => (
-            <FeaturedPropertyCard key={property.id} property={property} />
-          ))}
-        </div>
-      </section>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {featuredProperties.map((property) => (
+              <FeaturedPropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="w-full max-w-[950px] mx-auto">
         <div className="flex items-end justify-between mb-8">
