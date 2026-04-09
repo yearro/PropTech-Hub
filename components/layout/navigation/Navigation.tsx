@@ -3,15 +3,27 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { LanguageSelector } from "./LanguageSelector";
+import { Locale } from "@/lib/i18n/dictionaries";
 
-export function Navigation() {
+interface NavigationProps {
+  dict: {
+    buy: string;
+    rent: string;
+    sell: string;
+    saved: string;
+  };
+  lang: Locale;
+}
+
+export function Navigation({ dict, lang }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 bg-background-light/95 backdrop-blur-md border-b border-nordic-dark/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link href="/" className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+          <Link href={`/${lang}`} className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
             <div className="w-8 h-8 rounded-lg bg-nordic-dark flex items-center justify-center">
               <span className="material-icons text-white text-lg">apartment</span>
             </div>
@@ -21,25 +33,29 @@ export function Navigation() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="#" className="text-mosque font-medium text-sm border-b-2 border-mosque px-1 py-1">
-              Buy
+            <Link href="#" className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all">
+              {dict.buy}
             </Link>
             <Link href="#" className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all">
-              Rent
+              {dict.rent}
             </Link>
             <Link href="#" className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all">
-              Sell
+              {dict.sell}
             </Link>
             <Link href="#" className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all">
-              Saved Homes
+              {dict.saved}
             </Link>
           </div>
 
           <div className="flex items-center space-x-6">
-            <button className="text-nordic-dark hover:text-mosque:text-white transition-colors">
+            <div className="hidden sm:block">
+              <LanguageSelector currentLang={lang} />
+            </div>
+            
+            <button className="text-nordic-dark hover:text-mosque transition-colors">
               <span className="material-icons">search</span>
             </button>
-            <button className="text-nordic-dark hover:text-mosque:text-white transition-colors relative">
+            <button className="text-nordic-dark hover:text-mosque transition-colors relative">
               <span className="material-icons">notifications_none</span>
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-background-light"></span>
             </button>
@@ -67,19 +83,22 @@ export function Navigation() {
 
       {/* Mobile Menu */}
       <div className={`md:hidden border-t border-nordic-dark/5 bg-background-light overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? 'h-auto py-2' : 'h-0'}`}>
-        <div className="px-4 space-y-1">
-          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-mosque bg-mosque/10">
-            Buy
+        <div className="px-4 space-y-1 pb-4">
+          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5">
+            {dict.buy}
           </Link>
-          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5:bg-white/5">
-            Rent
+          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5">
+            {dict.rent}
           </Link>
-          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5:bg-white/5">
-            Sell
+          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5">
+            {dict.sell}
           </Link>
-          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5:bg-white/5">
-            Saved Homes
+          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5">
+            {dict.saved}
           </Link>
+          <div className="pt-4 px-3">
+            <LanguageSelector currentLang={lang} />
+          </div>
         </div>
       </div>
     </nav>

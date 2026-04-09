@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "buy": "Buy",
+    "rent": "Rent",
+    "sell": "Sell",
+    "saved": "Saved Homes"
+  },
+  "home": {
+    "title": "Find your",
+    "sanctuary": "sanctuary",
+    "search_placeholder": "Search by city, neighborhood...",
+    "search_button": "Search",
+    "all": "All",
+    "house": "House",
+    "apartment": "Apartment",
+    "villa": "Villa",
+    "penthouse": "Penthouse",
+    "featured": "Featured Collections",
+    "featured_subtitle": "Curated properties for the discerning eye.",
+    "new_market": "New in Market",
+    "new_market_subtitle": "Fresh opportunities added this week.",
+    "view_all": "View all"
+  }
+}

@@ -4,10 +4,13 @@ import { supabase } from "@/utils/supabase";
 import { Property } from "@/types";
 import Link from "next/link";
 import { FiltersAction } from "@/components/home/filters-action";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import { Locale } from "@/lib/i18n/config";
 
 import { MainSearch } from "@/components/home/main-search";
 
 export default async function Home(props: { 
+  params: Promise<{ lang: string }>;
   searchParams: Promise<{ 
     page?: string;
     location?: string;
@@ -18,7 +21,10 @@ export default async function Home(props: {
     baths?: string;
   }> 
 }) {
+  const { lang } = await props.params;
   const searchParams = await props.searchParams;
+  const dict = await getDictionary(lang as Locale);
+
   const page = parseInt(searchParams.page || '1', 10);
   const location = searchParams.location;
   const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice, 10) : undefined;
@@ -93,7 +99,7 @@ export default async function Home(props: {
     if (beds) params.set("beds", beds.toString());
     if (baths) params.set("baths", baths.toString());
     params.set("page", p.toString());
-    return `/?${params.toString()}`;
+    return `/${lang}/?${params.toString()}`;
   };
 
   return (
@@ -101,40 +107,44 @@ export default async function Home(props: {
       <section className="py-12 md:py-16 w-full max-w-[950px] mx-auto">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-nordic-dark leading-tight">
-            Find your{" "}
+            {dict.home.title}{" "}
             <span className="relative inline-block">
-              <span className="relative z-10 font-medium">sanctuary</span>
+              <span className="relative z-10 font-medium">{dict.home.sanctuary}</span>
               <span className="absolute bottom-2 left-0 w-full h-3 bg-mosque/20 -rotate-1 z-0"></span>
             </span>
             .
           </h1>
 
-          <MainSearch />
+          <MainSearch 
+            lang={lang} 
+            placeholder={dict.home.search_placeholder} 
+            buttonText={dict.home.search_button} 
+          />
 
           <div className="flex items-center justify-center gap-3 overflow-x-auto hide-scroll py-2 px-4 -mx-4">
-            <Link href="/" scroll={false}>
+            <Link href={`/${lang}`} scroll={false}>
               <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${!type || type === 'Any Type' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
-                All
+                {dict.home.all}
               </button>
             </Link>
-            <Link href="/?type=House" scroll={false}>
+            <Link href={`/${lang}/?type=House`} scroll={false}>
               <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${type === 'House' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
-                House
+                {dict.home.house}
               </button>
             </Link>
-            <Link href="/?type=Apartment" scroll={false}>
+            <Link href={`/${lang}/?type=Apartment`} scroll={false}>
               <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${type === 'Apartment' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
-                Apartment
+                {dict.home.apartment}
               </button>
             </Link>
-            <Link href="/?type=Villa" scroll={false}>
+            <Link href={`/${lang}/?type=Villa`} scroll={false}>
               <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${type === 'Villa' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
-                Villa
+                {dict.home.villa}
               </button>
             </Link>
-            <Link href="/?type=Penthouse" scroll={false}>
+            <Link href={`/${lang}/?type=Penthouse`} scroll={false}>
               <button className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${type === 'Penthouse' ? 'bg-nordic-dark text-white border border-transparent shadow-lg shadow-nordic-dark/10 hover:-translate-y-0.5' : 'bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5'}`}>
-                Penthouse
+                {dict.home.penthouse}
               </button>
             </Link>
             <div className="w-px h-6 bg-nordic-dark/10 mx-2"></div>
@@ -147,11 +157,11 @@ export default async function Home(props: {
         <section className="mb-16 w-full max-w-[950px] mx-auto">
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-light text-nordic-dark">Featured Collections</h2>
-              <p className="text-nordic-muted mt-1 text-sm">Curated properties for the discerning eye.</p>
+              <h2 className="text-2xl font-light text-nordic-dark">{dict.home.featured}</h2>
+              <p className="text-nordic-muted mt-1 text-sm">{dict.home.featured_subtitle}</p>
             </div>
             <a href="#" className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity">
-              View all <span className="material-icons text-sm">arrow_forward</span>
+              {dict.home.view_all} <span className="material-icons text-sm">arrow_forward</span>
             </a>
           </div>
 
@@ -166,13 +176,13 @@ export default async function Home(props: {
       <section className="w-full max-w-[950px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-light text-nordic-dark">New in Market</h2>
-            <p className="text-nordic-muted mt-1 text-sm">Fresh opportunities added this week.</p>
+            <h2 className="text-2xl font-light text-nordic-dark">{dict.home.new_market}</h2>
+            <p className="text-nordic-muted mt-1 text-sm">{dict.home.new_market_subtitle}</p>
           </div>
           <div className="hidden md:flex bg-white p-1 rounded-lg">
-            <button className="px-4 py-1.5 rounded-md text-sm font-medium bg-nordic-dark text-white shadow-sm">All</button>
-            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark dark:hover:text-white transition-colors">Buy</button>
-            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark dark:hover:text-white transition-colors">Rent</button>
+            <button className="px-4 py-1.5 rounded-md text-sm font-medium bg-nordic-dark text-white shadow-sm">{dict.home.all}</button>
+            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark dark:hover:text-white transition-colors">{dict.nav.buy}</button>
+            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark dark:hover:text-white transition-colors">{dict.nav.rent}</button>
           </div>
         </div>
 

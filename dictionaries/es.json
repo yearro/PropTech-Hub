@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "buy": "Comprar",
+    "rent": "Rentar",
+    "sell": "Vender",
+    "saved": "Guardados"
+  },
+  "home": {
+    "title": "Encuentra tu",
+    "sanctuary": "santuario",
+    "search_placeholder": "Busca por ciudad, vecindario...",
+    "search_button": "Buscar",
+    "all": "Todos",
+    "house": "Casa",
+    "apartment": "Departamento",
+    "villa": "Villa",
+    "penthouse": "Penthouse",
+    "featured": "Colecciones Destacadas",
+    "featured_subtitle": "Propiedades curadas para el ojo exigente.",
+    "new_market": "Nuevas en el Mercado",
+    "new_market_subtitle": "Nuevas oportunidades añadidas esta semana.",
+    "view_all": "Ver todas"
+  }
+}
