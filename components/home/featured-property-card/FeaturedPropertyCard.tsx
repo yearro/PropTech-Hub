@@ -2,9 +2,9 @@ import { Property } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 
-export function FeaturedPropertyCard({ property }: { property: Property }) {
+export function FeaturedPropertyCard({ property, lang, dict }: { property: Property; lang: string; dict: any }) {
   return (
-    <Link href={`/properties/${property.slug || property.id}`} className="group relative rounded-xl overflow-hidden shadow-soft bg-white cursor-pointer block">
+    <Link href={`/${lang}/properties/${property.slug || property.id}`} className="group relative rounded-xl overflow-hidden shadow-soft bg-white cursor-pointer block">
       <div className="aspect-[4/3] w-full overflow-hidden relative">
         <Image
           alt={property.title}
@@ -35,18 +35,18 @@ export function FeaturedPropertyCard({ property }: { property: Property }) {
           </div>
           <span className="text-xl font-semibold text-mosque">
             ${property.price.toLocaleString()}
-            {property.type === "FOR RENT" ? <span className="text-sm font-normal text-nordic-muted">/mo</span> : ""}
+            {property.type === "FOR RENT" ? <span className="text-sm font-normal text-nordic-muted">{dict.common.per_month}</span> : ""}
           </span>
         </div>
         <div className="flex items-center gap-6 mt-6 pt-6 border-t border-nordic-dark/5">
           <div className="flex items-center gap-2 text-nordic-muted text-sm">
-            <span className="material-icons text-lg">king_bed</span> {property.beds} Beds
+            <span className="material-icons text-lg">king_bed</span> {property.beds} {dict.property_details.bedrooms}
           </div>
           <div className="flex items-center gap-2 text-nordic-muted text-sm">
-            <span className="material-icons text-lg">bathtub</span> {property.baths} Baths
+            <span className="material-icons text-lg">bathtub</span> {property.baths} {dict.property_details.bathrooms}
           </div>
           <div className="flex items-center gap-2 text-nordic-muted text-sm">
-            <span className="material-icons text-lg">square_foot</span> {property.area.toLocaleString()} m²
+            <span className="material-icons text-lg">square_foot</span> {property.area.toLocaleString()} {dict.common.sqm}
           </div>
         </div>
       </div>

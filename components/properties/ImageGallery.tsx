@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-export function ImageGallery({ images, title }: { images: string[], title: string }) {
+export function ImageGallery({ images, title, dict }: { images: string[], title: string, dict: any }) {
   const validImages = images?.length > 0 ? images : ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000"];
   // Ensuring we show up to 20 images
   const displayImages = validImages.slice(0, 20);
@@ -21,7 +21,9 @@ export function ImageGallery({ images, title }: { images: string[], title: strin
           className="object-cover transition-transform duration-700 group-hover:scale-105" 
         />
         <div className="absolute top-4 left-4 flex gap-2">
-          <span className="bg-mosque text-white text-xs font-medium px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm">Premium</span>
+          <span className="bg-mosque text-white text-xs font-medium px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
+            {dict.gallery_premium}
+          </span>
         </div>
         <button 
           className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-nordic-dark px-4 py-2 rounded-lg text-sm font-medium shadow-lg backdrop-blur transition-all flex items-center gap-2"
@@ -30,7 +32,7 @@ export function ImageGallery({ images, title }: { images: string[], title: strin
           }}
         >
           <span className="material-icons text-sm">grid_view</span>
-          View All {displayImages.length} Photos
+          {dict.view_photos.replace("{count}", displayImages.length)}
         </button>
       </div>
 

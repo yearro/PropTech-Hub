@@ -4,10 +4,15 @@ import { Navigation } from "@/components/layout/navigation";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Locale } from "@/lib/i18n/config";
 
-export const metadata: Metadata = {
-  title: "LuxeEstate - Premium Real Estate",
-  description: "Find your sanctuary.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const dict = await getDictionary(lang as Locale);
+  
+  return {
+    title: `LuxeEstate - ${lang === 'es' ? 'Bienes Raíces Premium' : 'Premium Real Estate'}`,
+    description: dict.home.featured_subtitle,
+  };
+}
 
 export default async function RootLayout(props: {
   children: React.ReactNode;

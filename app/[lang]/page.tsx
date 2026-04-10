@@ -148,7 +148,7 @@ export default async function Home(props: {
               </button>
             </Link>
             <div className="w-px h-6 bg-nordic-dark/10 mx-2"></div>
-            <FiltersAction />
+            <FiltersAction lang={lang} dict={dict} />
           </div>
         </div>
       </section>
@@ -160,14 +160,19 @@ export default async function Home(props: {
               <h2 className="text-2xl font-light text-nordic-dark">{dict.home.featured}</h2>
               <p className="text-nordic-muted mt-1 text-sm">{dict.home.featured_subtitle}</p>
             </div>
-            <a href="#" className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity">
+            <Link href={`/${lang}`} className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity">
               {dict.home.view_all} <span className="material-icons text-sm">arrow_forward</span>
-            </a>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             {featuredProperties.map((property) => (
-              <FeaturedPropertyCard key={property.id} property={property} />
+              <FeaturedPropertyCard 
+                key={property.id} 
+                property={property} 
+                lang={lang}
+                dict={dict}
+              />
             ))}
           </div>
         </section>
@@ -188,7 +193,12 @@ export default async function Home(props: {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start auto-rows-max">
           {standardProperties.map(property => (
-            <PropertyCard key={property.id} property={property} />
+            <PropertyCard 
+              key={property.id} 
+              property={property} 
+              lang={lang}
+              dict={dict}
+            />
           ))}
         </div>
         

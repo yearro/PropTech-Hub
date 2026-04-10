@@ -7,13 +7,17 @@ import { ImageGallery } from "@/components/properties/ImageGallery";
 
 import { LazyMap } from "@/components/properties/LazyMap";
 
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import { Locale } from "@/lib/i18n/config";
+
 // Next.js 15 requires awaiting params
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; lang: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, lang } = await params;
+  const dict = await getDictionary(lang as Locale);
   
   const { data } = await supabase
     .from("properties")
@@ -21,11 +25,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .eq("slug", slug)
     .single();
 
-  if (!data) return { title: "Property Not Found" };
+  if (!data) return { title: dict.property_details.not_found };
 
   return {
     title: `${data.title} | LuxeEstate`,
-    description: `View details for ${data.title} located at ${data.location}. Price: $${data.price}`,
+    description: dict.property_details.meta_description
+      .replace("{title}", data.title)
+      .replace("{location}", data.location)
+      .replace("{price}", data.price.toLocaleString()),
     openGraph: {
       images: data.images || [],
     }
@@ -33,7 +40,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PropertyDetails({ params }: Props) {
-  const { slug } = await params;
+  const { slug, lang } = await params;
+  const dict = await getDictionary(lang as Locale);
   
   const { data } = await supabase
     .from("properties")
@@ -59,7 +67,7 @@ export default async function PropertyDetails({ params }: Props) {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
           <div className="lg:col-span-8 space-y-4">
-            <ImageGallery images={images} title={property.title} />
+            <ImageGallery images={images} title={property.title} dict={dict.property_details} />
           </div>
 
           <div className="lg:col-span-4 relative">
@@ -68,7 +76,7 @@ export default async function PropertyDetails({ params }: Props) {
                 <div className="mb-4">
                   <h1 className="text-4xl font-display font-light text-nordic-dark mb-2">
                     ${property.price.toLocaleString()}
-                    {property.type === "FOR RENT" ? <span className="text-xl text-nordic-muted">/mo</span> : ""}
+                    {property.type === "FOR RENT" ? <span className="text-xl text-nordic-muted">{dict.common.per_month}</span> : ""}
                   </h1>
                   <p className="text-nordic-dark/60 font-medium flex items-center gap-1">
                     <span className="material-icons text-mosque text-sm">location_on</span>
@@ -86,7 +94,7 @@ export default async function PropertyDetails({ params }: Props) {
                     <h3 className="font-semibold text-nordic-dark">Sarah Jenkins</h3>
                     <div className="flex items-center gap-1 text-xs text-mosque font-medium">
                       <span className="material-icons text-[14px]">star</span>
-                      <span>Top Rated Agent</span>
+                      <span>{dict.property_details.top_rated}</span>
                     </div>
                   </div>
                   <div className="ml-auto flex gap-2">
@@ -102,11 +110,11 @@ export default async function PropertyDetails({ params }: Props) {
                 <div className="space-y-3">
                   <button className="w-full bg-mosque hover:bg-primary-hover text-white py-4 px-6 rounded-lg font-medium transition-all shadow-lg shadow-mosque/20 flex items-center justify-center gap-2 group">
                     <span className="material-icons text-xl group-hover:scale-110 transition-transform">calendar_today</span>
-                    Schedule Visit
+                    {dict.property_details.schedule_visit}
                   </button>
                   <button className="w-full bg-transparent border border-nordic-dark/10 hover:border-mosque text-nordic-dark/80 hover:text-mosque py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
                     <span className="material-icons text-xl">mail_outline</span>
-                    Contact Agent
+                    {dict.property_details.contact_agent}
                   </button>
                 </div>
               </div>
@@ -123,65 +131,63 @@ export default async function PropertyDetails({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-2 lg:-mt-8">
           <div className="lg:col-span-8 flex flex-col space-y-8">
             <div className="bg-white p-8 rounded-xl shadow-sm border border-mosque/5">
-              <h2 className="text-lg font-semibold mb-6 text-nordic-dark">Property Features</h2>
+              <h2 className="text-lg font-semibold mb-6 text-nordic-dark">{dict.property_details.features}</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div className="flex flex-col items-center justify-center p-4 bg-mosque/5 rounded-lg border border-mosque/10">
                   <span className="material-icons text-mosque text-2xl mb-2">square_foot</span>
                   <span className="text-xl font-bold text-nordic-dark">{property.area}</span>
-                  <span className="text-xs uppercase tracking-wider text-nordic-dark/50">Square Meters</span>
+                  <span className="text-xs uppercase tracking-wider text-nordic-dark/50">{dict.property_details.square_meters}</span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-4 bg-mosque/5 rounded-lg border border-mosque/10">
                   <span className="material-icons text-mosque text-2xl mb-2">bed</span>
                   <span className="text-xl font-bold text-nordic-dark">{property.beds}</span>
-                  <span className="text-xs uppercase tracking-wider text-nordic-dark/50">Bedrooms</span>
+                  <span className="text-xs uppercase tracking-wider text-nordic-dark/50">{dict.property_details.bedrooms}</span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-4 bg-mosque/5 rounded-lg border border-mosque/10">
                   <span className="material-icons text-mosque text-2xl mb-2">shower</span>
                   <span className="text-xl font-bold text-nordic-dark">{property.baths}</span>
-                  <span className="text-xs uppercase tracking-wider text-nordic-dark/50">Bathrooms</span>
+                  <span className="text-xs uppercase tracking-wider text-nordic-dark/50">{dict.property_details.bathrooms}</span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-4 bg-mosque/5 rounded-lg border border-mosque/10">
                   <span className="material-icons text-mosque text-2xl mb-2">directions_car</span>
                   <span className="text-xl font-bold text-nordic-dark">2</span>
-                  <span className="text-xs uppercase tracking-wider text-nordic-dark/50">Garage</span>
+                  <span className="text-xs uppercase tracking-wider text-nordic-dark/50">{dict.property_details.garage}</span>
                 </div>
               </div>
             </div>
 
             <div className="bg-white p-8 rounded-xl shadow-sm border border-mosque/5">
-              <h2 className="text-lg font-semibold mb-4 text-nordic-dark">About this property</h2>
+              <h2 className="text-lg font-semibold mb-4 text-nordic-dark">{dict.property_details.about}</h2>
               <div className="prose prose-slate max-w-none text-nordic-dark/70 leading-relaxed">
                 <p className="mb-4">
-                  Experience modern luxury in this stunning property located at {property.location}.
-                  Designed with an emphasis on comfort and elegant living, this {property.type.toLowerCase()} 
-                  offers exceptional natural light and high-end finishes.
+                  {dict.property_details.about_p1
+                    .replace("{location}", property.location)
+                    .replace("{type}", (property.type === "FOR RENT" ? dict.nav.rent : dict.nav.buy).toLowerCase())}
                 </p>
                 <p>
-                  The open-concept design is perfect for contemporary lifestyles. Retreat to the primary suite, 
-                  a sanctuary of relaxation featuring modern amenities and sophisticated details. This is an 
-                  unmatched opportunity to enjoy premium living.
+                  {dict.property_details.about_p2}
                 </p>
               </div>
             </div>
 
             <div className="bg-white p-8 rounded-xl shadow-sm border border-mosque/5">
-              <h2 className="text-lg font-semibold mb-6 text-nordic-dark">Amenities</h2>
+              <h2 className="text-lg font-semibold mb-6 text-nordic-dark">{dict.property_details.amenities}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
                 <div className="flex items-center gap-3 text-nordic-dark/70">
                   <span className="material-icons text-mosque/60 text-sm">check_circle</span>
-                  <span>Smart Home System</span>
+                  <span>{dict.property_details.smart_home}</span>
                 </div>
                 <div className="flex items-center gap-3 text-nordic-dark/70">
                   <span className="material-icons text-mosque/60 text-sm">check_circle</span>
-                  <span>Swimming Pool</span>
+                  <span>{dict.property_details.pool}</span>
                 </div>
                 <div className="flex items-center gap-3 text-nordic-dark/70">
                   <span className="material-icons text-mosque/60 text-sm">check_circle</span>
-                  <span>Central Heating & Cooling</span>
+                  <span>{dict.property_details.heating_cooling}</span>
                 </div>
                 <div className="flex items-center gap-3 text-nordic-dark/70">
                   <span className="material-icons text-mosque/60 text-sm">check_circle</span>
-                  <span>Electric Vehicle Charging</span>
+                  <span>{dict.property_details.ev_charging}</span>
                 </div>
               </div>
             </div>
@@ -192,14 +198,14 @@ export default async function PropertyDetails({ params }: Props) {
                   <span className="material-icons">calculate</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-nordic-dark">Estimated Payment</h3>
+                  <h3 className="font-semibold text-nordic-dark">{dict.property_details.estimated_payment}</h3>
                   <p className="text-sm text-nordic-dark/60">
-                    Starting from <strong className="text-mosque">${Math.round(property.price * 0.005).toLocaleString()}/mo</strong> with 20% down
+                    {dict.property_details.starting_from} <strong className="text-mosque">${Math.round(property.price * 0.005).toLocaleString()}{dict.common.per_month}</strong> {dict.property_details.with_down}
                   </p>
                 </div>
               </div>
               <button className="whitespace-nowrap px-4 py-2 bg-white border border-nordic-dark/10 rounded-lg text-sm font-semibold hover:border-mosque transition-colors text-nordic-dark shadow-sm">
-                Calculate Mortgage
+                {dict.property_details.calculate_mortgage}
               </button>
             </div>
           </div>
@@ -209,7 +215,7 @@ export default async function PropertyDetails({ params }: Props) {
       <footer className="bg-white border-t border-slate-200 mt-12 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-sm text-nordic-dark/50">
-            © 2026 LuxeEstate Inc. All rights reserved.
+            © 2026 LuxeEstate Inc. {dict.common.rights_reserved}
           </div>
         </div>
       </footer>
