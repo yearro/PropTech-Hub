@@ -15,6 +15,7 @@ interface NavigationProps {
     rent: string;
     sell: string;
     saved: string;
+    login: string;
   };
   lang: Locale;
 }
@@ -97,7 +98,7 @@ export function Navigation({ dict, lang }: NavigationProps) {
             ) : (
               <Link href={`/${lang}/login`} className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2">
                 <button className="px-4 py-2 text-sm font-medium text-white bg-nordic-dark rounded-full hover:bg-mosque transition-colors">
-                  Login
+                  {dict.login}
                 </button>
               </Link>
             )}
