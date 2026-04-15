@@ -5,6 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { LanguageSelector } from "./LanguageSelector";
 import { Locale } from "@/lib/i18n/dictionaries";
+import { supabase } from "@/utils/supabase";
+import { User } from "@supabase/supabase-js";
+import { useEffect } from "react";
 
 interface NavigationProps {
   dict: {
@@ -18,6 +21,21 @@ interface NavigationProps {
 
 export function Navigation({ dict, lang }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <nav className="sticky top-0 z-50 bg-background-light/95 backdrop-blur-md border-b border-nordic-dark/10">
@@ -59,17 +77,30 @@ export function Navigation({ dict, lang }: NavigationProps) {
               <span className="material-icons">notifications_none</span>
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-background-light"></span>
             </button>
-            <button className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2">
-              <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all relative">
-                <Image
-                  alt="Profile"
-                  className="object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWxbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA"
-                  fill
-                  sizes="36px"
-                />
-              </div>
-            </button>
+            
+            {user ? (
+              <button 
+                className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2 group" 
+                onClick={() => supabase.auth.signOut()}
+                title="Sign Out"
+              >
+                <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent group-hover:ring-mosque transition-all relative">
+                  <Image
+                    alt="Profile Avatar"
+                    className="object-cover"
+                    src={user.user_metadata?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWxbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA"}
+                    fill
+                    sizes="36px"
+                  />
+                </div>
+              </button>
+            ) : (
+              <Link href={`/${lang}/login`} className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2">
+                <button className="px-4 py-2 text-sm font-medium text-white bg-nordic-dark rounded-full hover:bg-mosque transition-colors">
+                  Login
+                </button>
+              </Link>
+            )}
             
             <button 
               className="md:hidden text-nordic-dark"
