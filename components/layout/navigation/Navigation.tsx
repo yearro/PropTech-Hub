@@ -16,12 +16,18 @@ interface NavigationProps {
     sell: string;
     saved: string;
     login: string;
+    user_menu: {
+      profile: string;
+      settings: string;
+      sign_out: string;
+    };
   };
   lang: Locale;
 }
 
 export function Navigation({ dict, lang }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -80,21 +86,73 @@ export function Navigation({ dict, lang }: NavigationProps) {
             </button>
             
             {user ? (
-              <button 
-                className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2 group" 
-                onClick={() => supabase.auth.signOut()}
-                title="Sign Out"
-              >
-                <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent group-hover:ring-mosque transition-all relative">
-                  <Image
-                    alt="Profile Avatar"
-                    className="object-cover"
-                    src={user.user_metadata?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWxbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA"}
-                    fill
-                    sizes="36px"
-                  />
-                </div>
-              </button>
+              <div className="relative border-l border-nordic-dark/10 ml-2 pl-2">
+                <button 
+                  className="flex items-center gap-2 group focus:outline-none" 
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  aria-expanded={isUserMenuOpen}
+                  aria-haspopup="true"
+                >
+                  <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent group-hover:ring-mosque transition-all relative">
+                    <Image
+                      alt="Profile Avatar"
+                      className="object-cover"
+                      src={user.user_metadata?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWXbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA"}
+                      fill
+                      sizes="40px"
+                    />
+                  </div>
+                </button>
+
+                {isUserMenuOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setIsUserMenuOpen(false)}
+                    ></div>
+                    <div className="absolute right-0 mt-3 w-56 rounded-xl bg-white dark:bg-[#152e2a] shadow-xl border border-nordic-dark/10 dark:border-mosque/20 py-2 z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="px-4 py-3 border-b border-nordic-dark/5 dark:border-mosque/10">
+                        <p className="text-sm font-semibold text-nordic-dark dark:text-white truncate">
+                          {user.user_metadata?.full_name || user.email}
+                        </p>
+                        <p className="text-xs text-nordic-dark/50 dark:text-gray-400 truncate mt-0.5">
+                          {user.email}
+                        </p>
+                      </div>
+                      
+                      <Link 
+                        href="#" 
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-nordic-dark/80 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <span className="material-icons text-lg">person_outline</span>
+                        {dict.user_menu.profile}
+                      </Link>
+                      <Link 
+                        href="#" 
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-nordic-dark/80 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <span className="material-icons text-lg">settings</span>
+                        {dict.user_menu.settings}
+                      </Link>
+                      
+                      <div className="h-px bg-nordic-dark/5 dark:bg-mosque/10 my-1"></div>
+                      
+                      <button 
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors" 
+                        onClick={() => {
+                          supabase.auth.signOut();
+                          setIsUserMenuOpen(false);
+                        }}
+                      >
+                        <span className="material-icons text-lg">logout</span>
+                        {dict.user_menu.sign_out}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             ) : (
               <Link href={`/${lang}/login`} className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2">
                 <button className="px-4 py-2 text-sm font-medium text-white bg-nordic-dark rounded-full hover:bg-mosque transition-colors">

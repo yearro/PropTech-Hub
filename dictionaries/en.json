@@ -82,5 +82,21 @@
     "for_rent": "FOR RENT",
     "rights_reserved": "All rights reserved.",
     "view_details": "View Details"
+  },
+  "auth": {
+    "welcome_title": "Welcome to LuxeEstate",
+    "welcome_subtitle": "Unlock exclusive properties worldwide.",
+    "continue_google": "Continue with Google",
+    "continue_github": "Continue with GitHub",
+    "no_account": "Don't have an account?",
+    "sign_up": "Sign up",
+    "privacy_policy": "Privacy Policy",
+    "terms_service": "Terms of Service",
+    "help_center": "Help Center"
+  },
+  "user_menu": {
+    "profile": "My Profile",
+    "settings": "Settings",
+    "sign_out": "Sign Out"
   }
 }

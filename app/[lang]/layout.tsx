@@ -29,7 +29,7 @@ export default async function RootLayout(props: {
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-full flex flex-col bg-background-light text-nordic-dark font-display" suppressHydrationWarning>
-        <Navigation dict={dict.nav} lang={lang as Locale} />
+        <Navigation dict={{ ...dict.nav, user_menu: dict.user_menu }} lang={lang as Locale} />
         {children}
       </body>
     </html>

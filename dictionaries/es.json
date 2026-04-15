@@ -82,5 +82,21 @@
     "for_rent": "EN RENTA",
     "rights_reserved": "Todos los derechos reservados.",
     "view_details": "Ver Detalles"
+  },
+  "auth": {
+    "welcome_title": "Bienvenido a LuxeEstate",
+    "welcome_subtitle": "Desbloquea propiedades exclusivas en todo el mundo.",
+    "continue_google": "Continuar con Google",
+    "continue_github": "Continuar con GitHub",
+    "no_account": "¿No tienes una cuenta?",
+    "sign_up": "Regístrate",
+    "privacy_policy": "Política de Privacidad",
+    "terms_service": "Términos de Servicio",
+    "help_center": "Centro de Ayuda"
+  },
+  "user_menu": {
+    "profile": "Mi Perfil",
+    "settings": "Ajustes",
+    "sign_out": "Cerrar Sesión"
   }
 }
