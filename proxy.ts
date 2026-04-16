@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { locales } from './lib/i18n/config'
 import { createClient } from '@supabase/supabase-js'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // 1. Localization Logic
