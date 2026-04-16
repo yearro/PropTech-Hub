@@ -97,6 +97,7 @@
   "user_menu": {
     "profile": "My Profile",
     "settings": "Settings",
+    "admin_dashboard": "Admin Dashboard",
     "sign_out": "Sign Out"
   }
 }

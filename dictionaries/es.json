@@ -97,6 +97,7 @@
   "user_menu": {
     "profile": "Mi Perfil",
     "settings": "Ajustes",
+    "admin_dashboard": "Panel de Control",
     "sign_out": "Cerrar Sesión"
   }
 }

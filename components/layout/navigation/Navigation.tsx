@@ -19,6 +19,7 @@ interface NavigationProps {
     user_menu: {
       profile: string;
       settings: string;
+      admin_dashboard: string;
       sign_out: string;
     };
   };
@@ -29,16 +30,35 @@ export function Navigation({ dict, lang }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single()
+          .then(({ data }) => setRole(data?.role ?? 'viewer'));
+      }
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single()
+          .then(({ data }) => setRole(data?.role ?? 'viewer'));
+      } else {
+        setRole(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -136,6 +156,17 @@ export function Navigation({ dict, lang }: NavigationProps) {
                         <span className="material-icons text-lg">settings</span>
                         {dict.user_menu.settings}
                       </Link>
+                      
+                      {role === 'admin' && (
+                        <Link 
+                          href={`/${lang}/admin/properties`} 
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-mosque font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <span className="material-icons text-lg">admin_panel_settings</span>
+                          {dict.user_menu.admin_dashboard}
+                        </Link>
+                      )}
                       
                       <div className="h-px bg-nordic-dark/5 dark:bg-mosque/10 my-1"></div>
                       
