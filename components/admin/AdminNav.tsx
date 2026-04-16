@@ -1,8 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import { Locale } from "@/lib/i18n/config";
+import { supabase } from "@/utils/supabase";
+import { User } from "@supabase/supabase-js";
 
 interface AdminNavProps {
   lang: Locale;
@@ -10,9 +14,32 @@ interface AdminNavProps {
 
 export function AdminNav({ lang }: AdminNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setIsUserMenuOpen(false);
+    router.push(`/${lang}`);
+  };
 
   const navItems = [
-    { name: "Dashboard", href: `/${lang}/admin/properties`, icon: "dashboard" },
+    { name: "Properties", href: `/${lang}/admin/properties`, icon: "house_siding" },
     { name: "Users", href: `/${lang}/admin/users`, icon: "people" },
   ];
 
@@ -27,7 +54,7 @@ export function AdminNav({ lang }: AdminNavProps) {
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-8">
               {navItems.map((item) => {
-                const isActive = pathname.includes(item.href);
+                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
                 return (
                   <Link
                     key={item.name}
@@ -45,15 +72,54 @@ export function AdminNav({ lang }: AdminNavProps) {
               })}
             </div>
           </div>
+          
           <div className="flex items-center gap-4">
-             <button className="p-2 rounded-full text-gray-400 hover:text-mosque hover:bg-mosque/5 transition-colors">
-               <span className="material-icons text-xl">notifications_none</span>
-             </button>
-             <div className="h-9 w-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-white dark:ring-mosque/20 cursor-pointer">
-               <div className="w-full h-full bg-mosque/10 flex items-center justify-center text-mosque">
-                 <span className="material-icons">person</span>
-               </div>
-             </div>
+            <div className="relative">
+              <button 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center gap-2 p-1 rounded-full hover:bg-mosque/5 transition-colors focus:outline-none ring-2 ring-transparent hover:ring-mosque/20"
+              >
+                <div className="h-9 w-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-white dark:ring-mosque/20 relative">
+                  {user?.user_metadata?.avatar_url ? (
+                    <Image
+                      src={user.user_metadata.avatar_url}
+                      alt="Avatar"
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-mosque/10 flex items-center justify-center text-mosque">
+                      <span className="material-icons">person</span>
+                    </div>
+                  )}
+                </div>
+              </button>
+
+              {isUserMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-10" 
+                    onClick={() => setIsUserMenuOpen(false)}
+                  ></div>
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-[#1a3a35] ring-1 ring-black ring-opacity-5 py-1 z-20 border border-mosque/10 dark:border-mosque/20">
+                    <div className="px-4 py-2 border-b border-gray-100 dark:border-mosque/10 mb-1">
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Session</p>
+                      <p className="text-sm font-medium text-nordic-dark dark:text-white truncate mt-1">
+                        {user?.email}
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors gap-2"
+                    >
+                      <span className="material-icons text-lg">logout</span>
+                      Sign Out
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

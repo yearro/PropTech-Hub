@@ -1,4 +1,4 @@
-import 'server-only'
+// Removed server-only to allow client-side dictionary loading
 import type { Locale } from './config'
 
 const dictionaries = {

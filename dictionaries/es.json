@@ -4,7 +4,7 @@
     "rent": "Rentar",
     "sell": "Vender",
     "saved": "Guardados",
-    "login": "Iniciar Sesión"
+    "login": "Acceder"
   },
   "home": {
     "title": "Encuentra tu",
@@ -97,7 +97,9 @@
   "user_menu": {
     "profile": "Mi Perfil",
     "settings": "Ajustes",
-    "admin_dashboard": "Panel de Control",
+    "admin_dashboard": "Propiedades",
+    "admin_properties": "Administrar Propiedades",
+    "admin_users": "Administrar Usuarios",
     "sign_out": "Cerrar Sesión"
   }
 }

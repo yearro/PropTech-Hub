@@ -4,7 +4,7 @@
     "rent": "Rent",
     "sell": "Sell",
     "saved": "Saved Homes",
-    "login": "Login"
+    "login": "Sign In"
   },
   "home": {
     "title": "Find your",
@@ -97,7 +97,9 @@
   "user_menu": {
     "profile": "My Profile",
     "settings": "Settings",
-    "admin_dashboard": "Admin Dashboard",
+    "admin_dashboard": "Properties",
+    "admin_properties": "Manage Properties",
+    "admin_users": "Manage Users",
     "sign_out": "Sign Out"
   }
 }

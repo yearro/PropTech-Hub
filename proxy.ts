@@ -20,9 +20,10 @@ export async function proxy(request: NextRequest) {
   }
 
   // 2. Authorization Logic for /admin routes
+  // Note: We've moved this logic to AdminLayout (Client Component) because 
+  // supabase-js uses localStorage by default, which is not accessible here.
+  /*
   if (pathname.includes('/admin')) {
-    // Basic check: if there's no supabase auth cookie, redirect to login
-    // Note: Project ref is 'gqxbtrubjmpffkpxuwom'
     const hasSession = request.cookies.getAll().some(cookie => 
       cookie.name.includes('supabase-auth-token') || 
       cookie.name.includes('sb-') && cookie.name.includes('-auth-token')
@@ -30,13 +31,13 @@ export async function proxy(request: NextRequest) {
     
     if (!hasSession) {
       const url = request.nextUrl.clone()
-      // Extract locale from pathname if present
       const matches = pathname.match(/^\/([^\/]+)/)
       const locale = matches ? matches[1] : 'en'
       url.pathname = `/${locale}/login`
       return NextResponse.redirect(url)
     }
   }
+  */
 
   return NextResponse.next()
 }

@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { LanguageSelector } from "./LanguageSelector";
-import { Locale } from "@/lib/i18n/dictionaries";
+import { Locale } from "@/lib/i18n/config";
 import { supabase } from "@/utils/supabase";
 import { User } from "@supabase/supabase-js";
 import { useEffect } from "react";
@@ -31,6 +32,8 @@ export function Navigation({ dict, lang }: NavigationProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -63,6 +66,10 @@ export function Navigation({ dict, lang }: NavigationProps) {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  if (pathname.includes(`/${lang}/admin`)) {
+    return null;
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-background-light/95 backdrop-blur-md border-b border-nordic-dark/10">
@@ -158,23 +165,37 @@ export function Navigation({ dict, lang }: NavigationProps) {
                       </Link>
                       
                       {role === 'admin' && (
-                        <Link 
-                          href={`/${lang}/admin/properties`} 
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-mosque font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          <span className="material-icons text-lg">admin_panel_settings</span>
-                          {dict.user_menu.admin_dashboard}
-                        </Link>
+                        <>
+                          <div className="px-4 py-1.5 text-[10px] font-bold text-mosque/40 uppercase tracking-widest">
+                            {dict.user_menu.admin_dashboard}
+                          </div>
+                          <Link 
+                            href={`/${lang}/admin/properties`} 
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-mosque font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <span className="material-icons text-lg">house_siding</span>
+                            {dict.user_menu.admin_properties}
+                          </Link>
+                          <Link 
+                            href={`/${lang}/admin/users`} 
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-mosque font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <span className="material-icons text-lg">group</span>
+                            {dict.user_menu.admin_users}
+                          </Link>
+                        </>
                       )}
                       
                       <div className="h-px bg-nordic-dark/5 dark:bg-mosque/10 my-1"></div>
                       
                       <button 
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors" 
-                        onClick={() => {
-                          supabase.auth.signOut();
+                        onClick={async () => {
+                          await supabase.auth.signOut();
                           setIsUserMenuOpen(false);
+                          router.push(`/${lang}`);
                         }}
                       >
                         <span className="material-icons text-lg">logout</span>
