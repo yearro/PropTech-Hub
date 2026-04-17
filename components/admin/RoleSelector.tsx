@@ -1,24 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { updateUserRole } from "@/app/actions";
 import { supabase } from "@/utils/supabase";
 
 interface RoleSelectorProps {
   userId: string;
   currentRole: string;
   onRoleChange?: (newRole: string) => void;
+  lang: string;
+  dict: any;
+  currentUserId?: string;
 }
 
-const roles = [
-  { value: "admin", label: "Administrator", icon: "shield" },
-  { value: "broker", label: "Broker", icon: "business_center" },
-  { value: "agent", label: "Agent", icon: "support_agent" },
-  { value: "viewer", label: "Viewer", icon: "visibility" },
-];
-
-export function RoleSelector({ userId, currentRole, onRoleChange }: RoleSelectorProps) {
+export function RoleSelector({ userId, currentRole, onRoleChange, lang, dict, currentUserId: propCurrentUserId }: RoleSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [detectedUserId, setDetectedUserId] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (!propCurrentUserId) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setDetectedUserId(session?.user?.id);
+      });
+    }
+  }, [propCurrentUserId]);
+
+  const currentUserId = propCurrentUserId || detectedUserId;
+
+  const roles = [
+    { value: "admin", label: dict.admin.users.roles.admin, icon: "shield" },
+    { value: "broker", label: dict.admin.users.roles.broker, icon: "business_center" },
+    { value: "agent", label: dict.admin.users.roles.agent, icon: "support_agent" },
+    { value: "viewer", label: dict.admin.users.roles.viewer, icon: "visibility" },
+  ];
 
   const handleRoleChange = async (newRole: string) => {
     if (newRole === currentRole) {
@@ -27,32 +42,36 @@ export function RoleSelector({ userId, currentRole, onRoleChange }: RoleSelector
     }
 
     setLoading(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ role: newRole })
-      .eq("id", userId);
+    const { success, error } = await updateUserRole(userId, newRole);
 
-    if (!error) {
+    if (success) {
       onRoleChange?.(newRole);
+    } else {
+      console.error("Error updating role:", error);
+      alert(lang === 'es' ? `Error al actualizar rol: ${error}` : `Error updating role: ${error}`);
     }
+    
     setLoading(false);
     setIsOpen(false);
   };
 
-  const currentRoleData = roles.find(r => r.value === currentRole) || roles[3];
+  const isSelf = userId === currentUserId;
 
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        disabled={loading}
+        disabled={loading || isSelf}
         className={`inline-flex items-center px-4 py-2 border shadow-sm text-xs font-medium rounded-lg transition-colors w-full md:w-auto justify-center ${
-          isOpen 
-            ? "bg-mosque text-white border-mosque" 
-            : "border-nordic-dark/10 bg-white dark:bg-gray-800 text-nordic-dark hover:bg-nordic-dark hover:text-white"
+          isSelf
+            ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-600 cursor-not-allowed opacity-60"
+            : isOpen 
+              ? "bg-mosque text-white border-mosque" 
+              : "border-nordic-dark/10 bg-white dark:bg-gray-800 text-nordic-dark hover:bg-nordic-dark hover:text-white"
         }`}
+        title={isSelf ? (lang === 'es' ? "No puedes cambiar tu propio rol" : "You cannot change your own role") : undefined}
       >
-        {loading ? "Updating..." : "Change Role"}
+        {loading ? dict.admin.users.updating : dict.admin.users.change_role}
         <span className="material-icons text-[16px] ml-2">{isOpen ? "expand_less" : "expand_more"}</span>
       </button>
 
@@ -83,7 +102,7 @@ export function RoleSelector({ userId, currentRole, onRoleChange }: RoleSelector
                 onClick={() => setIsOpen(false)}
               >
                 <span className="material-icons text-sm mr-3 text-red-300 group-hover:text-red-100">block</span>
-                Suspend User
+                {lang === 'es' ? 'Suspender Usuario' : 'Suspend User'}
               </button>
             </div>
           </div>

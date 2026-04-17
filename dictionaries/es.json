@@ -101,5 +101,32 @@
     "admin_properties": "Administrar Propiedades",
     "admin_users": "Administrar Usuarios",
     "sign_out": "Cerrar Sesión"
+  },
+  "admin": {
+    "users": {
+      "title": "Directorio de Usuarios",
+      "subtitle": "Gestiona el acceso y roles de usuario para tus propiedades.",
+      "add_user": "Agregar Usuario",
+      "search_placeholder": "Buscar por nombre, email...",
+      "modal_title": "Nuevo Usuario",
+      "full_name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "role": "Rol",
+      "cancel": "Cancelar",
+      "save": "Guardar Usuario",
+      "saving": "Guardando...",
+      "roles": {
+        "admin": "Administrador",
+        "broker": "Broker",
+        "agent": "Agente",
+        "viewer": "Espectador"
+      },
+      "empty_title": "No se encontraron usuarios",
+      "empty_subtitle": "Intenta ajustar los filtros de búsqueda.",
+      "showing": "Mostrando",
+      "users_count": "usuarios",
+      "change_role": "Cambiar Rol",
+      "updating": "Actualizando..."
+    }
   }
 }

@@ -101,5 +101,32 @@
     "admin_properties": "Manage Properties",
     "admin_users": "Manage Users",
     "sign_out": "Sign Out"
+  },
+  "admin": {
+    "users": {
+      "title": "User Directory",
+      "subtitle": "Manage user access and roles for your properties.",
+      "add_user": "Add User",
+      "search_placeholder": "Search by name, email...",
+      "modal_title": "New User",
+      "full_name": "Full Name",
+      "email": "Email Address",
+      "role": "Role",
+      "cancel": "Cancel",
+      "save": "Save User",
+      "saving": "Saving...",
+      "roles": {
+        "admin": "Administrator",
+        "broker": "Broker",
+        "agent": "Agent",
+        "viewer": "Viewer"
+      },
+      "empty_title": "No users found",
+      "empty_subtitle": "Try adjusting your search filters.",
+      "showing": "Showing",
+      "users_count": "users",
+      "change_role": "Change Role",
+      "updating": "Updating..."
+    }
   }
 }

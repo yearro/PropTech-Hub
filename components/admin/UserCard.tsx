@@ -13,9 +13,12 @@ interface UserCardProps {
     role: string;
     created_at: string;
   };
+  lang: string;
+  dict: any;
+  currentUserId?: string;
 }
 
-export function UserCard({ user: initialUser }: UserCardProps) {
+export function UserCard({ user: initialUser, lang, dict, currentUserId }: UserCardProps) {
   const [user, setUser] = useState(initialUser);
 
   const handleRoleChange = (newRole: string) => {
@@ -80,6 +83,9 @@ export function UserCard({ user: initialUser }: UserCardProps) {
           userId={user.id} 
           currentRole={user.role} 
           onRoleChange={handleRoleChange} 
+          lang={lang}
+          dict={dict}
+          currentUserId={currentUserId}
         />
       </div>
     </div>
