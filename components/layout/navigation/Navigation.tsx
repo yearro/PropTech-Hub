@@ -21,6 +21,8 @@ interface NavigationProps {
       profile: string;
       settings: string;
       admin_dashboard: string;
+      admin_properties: string;
+      admin_users: string;
       sign_out: string;
     };
   };
