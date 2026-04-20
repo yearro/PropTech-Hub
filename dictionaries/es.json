@@ -103,6 +103,14 @@
     "sign_out": "Cerrar Sesión"
   },
   "admin": {
+    "nav": {
+      "title": "Panel de Administración",
+      "properties": "Propiedades",
+      "users": "Usuarios",
+      "session": "Sesión",
+      "sign_out": "Cerrar Sesión",
+      "property_management": "Gestión de Propiedades LuxeEstate"
+    },
     "users": {
       "title": "Directorio de Usuarios",
       "subtitle": "Gestiona el acceso y roles de usuario para tus propiedades.",

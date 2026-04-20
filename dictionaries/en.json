@@ -103,6 +103,14 @@
     "sign_out": "Sign Out"
   },
   "admin": {
+    "nav": {
+      "title": "Admin Panel",
+      "properties": "Properties",
+      "users": "Users",
+      "session": "Session",
+      "sign_out": "Sign Out",
+      "property_management": "LuxeEstate Property Management"
+    },
     "users": {
       "title": "User Directory",
       "subtitle": "Manage user access and roles for your properties.",

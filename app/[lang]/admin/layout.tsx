@@ -5,6 +5,7 @@ import { Locale } from "@/lib/i18n/config";
 import { supabase } from "@/utils/supabase";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export default function AdminLayout({
   children,
@@ -16,8 +17,13 @@ export default function AdminLayout({
   const params = use(paramsPromise);
   const lang = params.lang as Locale;
   const router = useRouter();
-  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dict, setDict] = useState<any>(null);
+
+  useEffect(() => {
+    getDictionary(lang).then(setDict);
+  }, [lang]);
 
   useEffect(() => {
     let mounted = true;
@@ -89,12 +95,12 @@ export default function AdminLayout({
     );
   }
 
-  if (isAuthorized === null) {
+  if (isAuthorized === null || !dict) {
     return (
       <div className="min-h-screen bg-[#EEF6F6] dark:bg-[#0f2320] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-mosque border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-mosque font-medium animate-pulse">Verifying access...</p>
+          <p className="text-mosque font-medium animate-pulse">{!dict ? "Loading translations..." : "Verifying access..."}</p>
         </div>
       </div>
     );
@@ -102,14 +108,14 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-[#EEF6F6] dark:bg-[#0f2320] flex flex-col">
-      <AdminNav lang={lang} />
+      <AdminNav lang={lang} dict={dict} />
       <main className="flex-grow">
         {children}
       </main>
       <footer className="mt-auto border-t border-gray-200 dark:border-mosque/20 bg-white dark:bg-[#152e2a] py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm text-gray-400 dark:text-gray-500">
-            © {new Date().getFullYear()} LuxeEstate Property Management. All rights reserved.
+            © {new Date().getFullYear()} {dict.admin.nav.property_management}. {dict.common.rights_reserved}
           </p>
         </div>
       </footer>
