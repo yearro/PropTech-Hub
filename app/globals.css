@@ -4,15 +4,19 @@
   /* Added custom colors from guidelines */
   --color-primary: #06f9d0;
   --color-background-light: #EEF6F6; /* Clear Day */
-  --color-background-dark: #0f231f; 
-  --color-nordic-dark: #19322F; 
+  --color-background-dark: #0f231f;
+  --color-nordic-dark: #19322F;
+  --color-nordic: #19322F;
   --color-nordic-muted: #5C706D;
   --color-mosque: #006655;
   --color-hint-of-green: #D9ECC8;
+  --color-hint-green: #D9ECC8;
+  --color-clear-day: #EEF6F6;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
+  --font-sf-pro: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
   --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.05);
   --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
 

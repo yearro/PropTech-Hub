@@ -121,7 +121,11 @@ export default async function PropertyDetails({ params }: Props) {
               
               <div className="bg-white p-2 rounded-xl shadow-sm border border-mosque/5">
                 <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-slate-100">
-                  <LazyMap locationText={property.location} />
+                  <LazyMap 
+                    locationText={property.location} 
+                    latitude={data.latitude}
+                    longitude={data.longitude}
+                  />
                 </div>
               </div>
             </div>
