@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { RoleSelector } from "./RoleSelector";
 import { useState } from "react";
+import { getAvatarFallback } from "@/utils/avatarFallback";
 
 interface UserCardProps {
   user: {
@@ -20,10 +21,15 @@ interface UserCardProps {
 
 export function UserCard({ user: initialUser, lang, dict, currentUserId }: UserCardProps) {
   const [user, setUser] = useState(initialUser);
+  const [imgError, setImgError] = useState(false);
 
   const handleRoleChange = (newRole: string) => {
     setUser({ ...user, role: newRole });
   };
+
+  const avatarSrc = imgError
+    ? getAvatarFallback(user.full_name)
+    : (user.avatar_url || getAvatarFallback(user.full_name));
 
   return (
     <div className={`group relative rounded-xl p-5 shadow-sm border transition-all hover:shadow-md flex flex-col md:grid md:grid-cols-12 gap-4 items-center ${
@@ -36,10 +42,12 @@ export function UserCard({ user: initialUser, lang, dict, currentUserId }: UserC
           <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-white dark:border-mosque relative bg-gray-100">
             <Image
               alt={user.full_name || 'User'}
-              src={user.avatar_url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWXbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA'}
+              src={avatarSrc}
               fill
               className="object-cover"
               sizes="48px"
+              onError={() => setImgError(true)}
+              unoptimized
             />
           </div>
           <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-400 ring-2 ring-white"></span>

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Locale } from "@/lib/i18n/config";
 import { supabase } from "@/utils/supabase";
 import { User } from "@supabase/supabase-js";
+import { getAvatarFallback } from "@/utils/avatarFallback";
 
 interface AdminNavProps {
   lang: Locale;
@@ -28,6 +29,7 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -92,18 +94,21 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
                 className="flex items-center gap-2 p-1 rounded-full hover:bg-mosque/5 transition-colors focus:outline-none ring-2 ring-transparent hover:ring-mosque/20"
               >
                 <div className="h-9 w-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-white dark:ring-mosque/20 relative">
-                  {user?.user_metadata?.avatar_url ? (
+                  {user?.user_metadata?.avatar_url && !imgError ? (
                     <Image
                       src={user.user_metadata.avatar_url}
                       alt="Avatar"
                       fill
                       className="object-cover"
                       unoptimized
+                      onError={() => setImgError(true)}
                     />
                   ) : (
-                    <div className="w-full h-full bg-mosque/10 flex items-center justify-center text-mosque">
-                      <span className="material-icons">person</span>
-                    </div>
+                    <img
+                      src={getAvatarFallback(user?.user_metadata?.full_name || user?.email)}
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                    />
                   )}
                 </div>
               </button>

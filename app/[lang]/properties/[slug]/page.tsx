@@ -45,7 +45,7 @@ export default async function PropertyDetails({ params }: Props) {
   
   const { data } = await supabase
     .from("properties")
-    .select("*")
+    .select("*, agent:profiles(*)")
     .eq("slug", slug)
     .single();
 
@@ -84,38 +84,49 @@ export default async function PropertyDetails({ params }: Props) {
                   </p>
                 </div>
                 <div className="h-px bg-slate-100 my-6"></div>
-                <div className="flex items-center gap-4 mb-6">
-                  <img
-                    alt="Agent"
-                    className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150"
-                  />
-                  <div>
-                    <h3 className="font-semibold text-nordic-dark">Sarah Jenkins</h3>
-                    <div className="flex items-center gap-1 text-xs text-mosque font-medium">
-                      <span className="material-icons text-[14px]">star</span>
-                      <span>{dict.property_details.top_rated}</span>
+                {property.agent && (
+                  <div className="flex items-center gap-4 mb-6">
+                    <img
+                      alt={property.agent.full_name || "Agent"}
+                      className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
+                      src={property.agent.avatar_url || "https://ui-avatars.com/api/?background=0d6e6e&color=fff&bold=true&size=128&name=" + encodeURIComponent(property.agent.full_name || "Agent")}
+                      onError={(e) => { (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?background=0d6e6e&color=fff&bold=true&size=128&name=" + encodeURIComponent(property.agent.full_name || "Agent"); }}
+                    />
+                    <div>
+                      <h3 className="font-semibold text-nordic-dark">{property.agent.full_name || "Agente Inmobiliario"}</h3>
+                      <div className="flex items-center gap-1 text-xs text-mosque font-medium">
+                        <span className="material-icons text-[14px]">star</span>
+                        <span>{property.agent.role === 'broker' ? 'Broker Destacado' : dict.property_details.top_rated || 'Agente Destacado'}</span>
+                      </div>
+                    </div>
+                    <div className="ml-auto flex gap-2">
+                      <a href={property.agent.email ? `mailto:${property.agent.email}` : '#'} className="p-2 rounded-full bg-mosque/10 text-mosque hover:bg-mosque hover:text-white transition-colors flex items-center justify-center">
+                        <span className="material-icons text-sm">chat</span>
+                      </a>
+                      <a href={property.agent.phone ? `tel:${property.agent.phone}` : '#'} className="p-2 rounded-full bg-mosque/10 text-mosque hover:bg-mosque hover:text-white transition-colors flex items-center justify-center">
+                        <span className="material-icons text-sm">call</span>
+                      </a>
                     </div>
                   </div>
-                  <div className="ml-auto flex gap-2">
-                    <button className="p-2 rounded-full bg-mosque/10 text-mosque hover:bg-mosque hover:text-white transition-colors">
-                      <span className="material-icons text-sm">chat</span>
-                    </button>
-                    <button className="p-2 rounded-full bg-mosque/10 text-mosque hover:bg-mosque hover:text-white transition-colors">
-                      <span className="material-icons text-sm">call</span>
-                    </button>
-                  </div>
-                </div>
+                )}
 
                 <div className="space-y-3">
                   <button className="w-full bg-mosque hover:bg-primary-hover text-white py-4 px-6 rounded-lg font-medium transition-all shadow-lg shadow-mosque/20 flex items-center justify-center gap-2 group">
                     <span className="material-icons text-xl group-hover:scale-110 transition-transform">calendar_today</span>
                     {dict.property_details.schedule_visit}
                   </button>
-                  <button className="w-full bg-transparent border border-nordic-dark/10 hover:border-mosque text-nordic-dark/80 hover:text-mosque py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
-                    <span className="material-icons text-xl">mail_outline</span>
-                    {dict.property_details.contact_agent}
-                  </button>
+                  {property.agent?.email && (
+                    <a href={`mailto:${property.agent.email}`} className="w-full bg-transparent border border-nordic-dark/10 hover:border-mosque text-nordic-dark/80 hover:text-mosque py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
+                      <span className="material-icons text-xl">mail_outline</span>
+                      {dict.property_details.contact_agent}
+                    </a>
+                  )}
+                  {!property.agent?.email && (
+                    <button className="w-full bg-transparent border border-nordic-dark/10 hover:border-mosque text-nordic-dark/80 hover:text-mosque py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
+                      <span className="material-icons text-xl">mail_outline</span>
+                      {dict.property_details.contact_agent}
+                    </button>
+                  )}
                 </div>
               </div>
               

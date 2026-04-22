@@ -32,6 +32,7 @@ export async function createUserProfile(userData: {
   email: string;
   role: string;
   avatar_url: string;
+  phone?: string | null;
 }) {
   console.log('[Server Action] Attempting to create profile for:', userData.email);
   console.log('[Server Action] Using service role key:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);

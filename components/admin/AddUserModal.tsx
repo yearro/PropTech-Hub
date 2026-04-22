@@ -19,7 +19,9 @@ export function AddUserModal({ isOpen, onClose, lang, dict }: AddUserModalProps)
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
-    role: "agent"
+    role: "agent",
+    countryCode: "+52",
+    phoneNumber: ""
   });
 
   const DEFAULT_AVATAR = "https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWXbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA";
@@ -33,7 +35,8 @@ export function AddUserModal({ isOpen, onClose, lang, dict }: AddUserModalProps)
         full_name: formData.full_name,
         email: formData.email,
         role: formData.role,
-        avatar_url: DEFAULT_AVATAR
+        avatar_url: DEFAULT_AVATAR,
+        phone: formData.phoneNumber ? `${formData.countryCode} ${formData.phoneNumber.trim()}` : null
       });
 
       if (!success) {
@@ -46,7 +49,9 @@ export function AddUserModal({ isOpen, onClose, lang, dict }: AddUserModalProps)
       setFormData({
         full_name: "",
         email: "",
-        role: "agent"
+        role: "agent",
+        countryCode: "+52",
+        phoneNumber: ""
       });
     } catch (error: any) {
       console.error("Error adding user:", error);
@@ -61,6 +66,15 @@ export function AddUserModal({ isOpen, onClose, lang, dict }: AddUserModalProps)
     { value: "broker", label: dict.admin.users.roles.broker },
     { value: "agent", label: dict.admin.users.roles.agent },
     { value: "viewer", label: dict.admin.users.roles.viewer }
+  ];
+
+  const countryCodes = [
+    { code: "+1", label: "+1 (US/CA)" },
+    { code: "+34", label: "+34 (ES)" },
+    { code: "+52", label: "+52 (MX)" },
+    { code: "+54", label: "+54 (AR)" },
+    { code: "+56", label: "+56 (CL)" },
+    { code: "+57", label: "+57 (CO)" }
   ];
 
   return (
@@ -96,6 +110,30 @@ export function AddUserModal({ isOpen, onClose, lang, dict }: AddUserModalProps)
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-nordic-dark/60 dark:text-gray-400 uppercase tracking-widest mb-2">
+            {dict.admin.users.phone || "Teléfono"}
+          </label>
+          <div className="flex gap-2">
+            <select
+              value={formData.countryCode}
+              onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+              className="px-3 py-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-mosque/20 focus:ring-2 focus:ring-mosque focus:bg-white transition-all outline-none text-nordic-dark dark:text-white shadow-inner appearance-none cursor-pointer min-w-[max-content]"
+            >
+              {countryCodes.map(c => (
+                <option key={c.code} value={c.code}>{c.label}</option>
+              ))}
+            </select>
+            <input
+              type="tel"
+              className="flex-1 px-4 py-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-mosque/20 focus:ring-2 focus:ring-mosque focus:bg-white transition-all outline-none text-nordic-dark dark:text-white shadow-inner"
+              placeholder="(555) 123-4567"
+              value={formData.phoneNumber}
+              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+            />
+          </div>
         </div>
 
         <div>

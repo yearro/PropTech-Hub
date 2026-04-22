@@ -9,6 +9,7 @@ import { Locale } from "@/lib/i18n/config";
 import { supabase } from "@/utils/supabase";
 import { User } from "@supabase/supabase-js";
 import { useEffect } from "react";
+import { getAvatarFallback } from "@/utils/avatarFallback";
 
 interface NavigationProps {
   dict: {
@@ -34,6 +35,7 @@ export function Navigation({ dict, lang }: NavigationProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const [imgError, setImgError] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -123,13 +125,23 @@ export function Navigation({ dict, lang }: NavigationProps) {
                   aria-haspopup="true"
                 >
                   <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent group-hover:ring-mosque transition-all relative">
-                    <Image
-                      alt="Profile Avatar"
-                      className="object-cover"
-                      src={user.user_metadata?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWXbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA"}
-                      fill
-                      sizes="40px"
-                    />
+                    {user.user_metadata?.avatar_url && !imgError ? (
+                      <Image
+                        alt="Profile Avatar"
+                        className="object-cover"
+                        src={user.user_metadata.avatar_url}
+                        fill
+                        sizes="40px"
+                        unoptimized
+                        onError={() => setImgError(true)}
+                      />
+                    ) : (
+                      <img
+                        alt="Profile Avatar"
+                        className="w-full h-full object-cover"
+                        src={getAvatarFallback(user.user_metadata?.full_name || user.email)}
+                      />
+                    )}
                   </div>
                 </button>
 

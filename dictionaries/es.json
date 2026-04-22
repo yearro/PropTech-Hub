@@ -191,6 +191,7 @@
       "modal_title": "Nuevo Usuario",
       "full_name": "Nombre Completo",
       "email": "Correo Electrónico",
+      "phone": "Teléfono",
       "role": "Rol",
       "cancel": "Cancelar",
       "save": "Guardar Usuario",
