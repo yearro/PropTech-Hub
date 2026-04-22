@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .eq("slug", slug)
     .single();
 
-  if (!data) return { title: dict.property_details.not_found };
+  if (!data || data.is_active === false) return { title: dict.property_details.not_found };
 
   return {
     title: `${data.title} | LuxeEstate`,
@@ -49,7 +49,7 @@ export default async function PropertyDetails({ params }: Props) {
     .eq("slug", slug)
     .single();
 
-  if (!data) {
+  if (!data || data.is_active === false) {
     notFound();
   }
 

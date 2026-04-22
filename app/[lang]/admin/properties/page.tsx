@@ -15,6 +15,7 @@ interface Filters {
   minPrice: string;
   maxPrice: string;
   sortBy: string;
+  visibility: "all" | "active" | "inactive";
 }
 
 const DEFAULT_FILTERS: Filters = {
@@ -24,6 +25,7 @@ const DEFAULT_FILTERS: Filters = {
   minPrice: "",
   maxPrice: "",
   sortBy: "title_asc",
+  visibility: "all",
 };
 
 const PROPERTY_TYPES = ["apartment", "house", "villa", "penthouse", "commercial"];
@@ -105,6 +107,7 @@ export default function AdminPropertiesPage(props: {
     appliedFilters.minPrice !== "",
     appliedFilters.maxPrice !== "",
     appliedFilters.sortBy !== "title_asc",
+    appliedFilters.visibility !== "all",
   ].filter(Boolean).length;
 
   // ── dictionary ──────────────────────────────────────────────────────────────
@@ -127,15 +130,16 @@ export default function AdminPropertiesPage(props: {
     try {
       let query = supabase
         .from("properties")
-        .select("id, title, location, price, beds, baths, area, images, type, status", {
+        .select("id, title, location, price, beds, baths, area, images, type, status, is_active", {
           count: "exact",
         });
 
       // Search
       if (appliedFilters.search.trim()) {
-        query = query.or(
-          `title.ilike.%${appliedFilters.search.trim()}%,location.ilike.%${appliedFilters.search.trim()}%`
-        );
+        const searchTerm = appliedFilters.search.trim();
+        if (searchTerm) {
+          query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
+        }
       }
       // Type
       if (appliedFilters.type !== "all") {
@@ -151,6 +155,12 @@ export default function AdminPropertiesPage(props: {
       }
       if (appliedFilters.maxPrice !== "") {
         query = query.lte("price", parseFloat(appliedFilters.maxPrice));
+      }
+      // Visibility
+      if (appliedFilters.visibility === "active") {
+        query = query.eq("is_active", true);
+      } else if (appliedFilters.visibility === "inactive") {
+        query = query.eq("is_active", false);
       }
 
       // Sorting
@@ -181,6 +191,26 @@ export default function AdminPropertiesPage(props: {
   }, [dict, fetchProperties]);
 
   const totalPages = Math.ceil(count / pageSize);
+
+  // ── Toggle Visibility ────────────────────────────────────────────────────────
+  const handleToggleVisibility = async (id: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("properties")
+        .update({ is_active: !currentStatus })
+        .eq("id", id);
+        
+      if (error) throw error;
+      
+      // Update local state to reflect change immediately without full reload
+      setProperties((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, is_active: !currentStatus } : p))
+      );
+    } catch (e) {
+      console.error("Failed to toggle visibility:", e);
+      alert(lang === "es" ? "Error al cambiar la visibilidad" : "Failed to change visibility");
+    }
+  };
 
   // ── Apply / reset filters ────────────────────────────────────────────────────
   const applyFilters = () => {
@@ -398,6 +428,22 @@ export default function AdminPropertiesPage(props: {
                 <option value="area_desc">{lang === "es" ? "Área mayor primero" : "Largest area first"}</option>
               </select>
             </div>
+
+            {/* Visibility */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+                {lang === "es" ? "Visibilidad" : "Visibility"}
+              </label>
+              <select
+                value={filters.visibility}
+                onChange={(e) => setField("visibility", e.target.value as any)}
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-mosque/30 bg-gray-50 dark:bg-[#0f2320] text-nordic-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-mosque/40 focus:border-mosque transition-all cursor-pointer"
+              >
+                <option value="all">{lang === "es" ? "Mostrar todas" : "Show all"}</option>
+                <option value="active">{lang === "es" ? "Solo activas" : "Active only"}</option>
+                <option value="inactive">{lang === "es" ? "Solo inactivas" : "Inactive only"}</option>
+              </select>
+            </div>
           </div>
 
           {/* Action row */}
@@ -540,8 +586,13 @@ export default function AdminPropertiesPage(props: {
                     />
                   </div>
                   <div className="overflow-hidden">
-                    <h3 className="text-base font-black text-nordic-dark dark:text-white group-hover:text-mosque transition-colors truncate leading-tight">
+                    <h3 className="text-base font-black text-nordic-dark dark:text-white group-hover:text-mosque transition-colors truncate leading-tight flex items-center gap-2">
                       {property.title}
+                      {!property.is_active && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] bg-red-100 text-red-600 border border-red-200 uppercase font-black tracking-tighter">
+                          {dict?.admin?.properties?.inactive || "Inactive"}
+                        </span>
+                      )}
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">
                       {property.location}
@@ -590,10 +641,21 @@ export default function AdminPropertiesPage(props: {
                     <span className="material-icons text-xl">edit</span>
                   </Link>
                   <button
-                    className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-white dark:hover:bg-red-900/10 shadow-none hover:shadow-lg transition-all"
-                    title={lang === "es" ? "Eliminar" : "Delete"}
+                    onClick={() => handleToggleVisibility(property.id, property.is_active)}
+                    className={`p-2 rounded-xl transition-all shadow-none hover:shadow-lg ${
+                      property.is_active 
+                        ? "text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/10" 
+                        : "text-gray-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/10"
+                    }`}
+                    title={
+                      property.is_active
+                        ? (dict?.admin?.properties?.hide || (lang === "es" ? "Ocultar" : "Hide"))
+                        : (dict?.admin?.properties?.show || (lang === "es" ? "Mostrar" : "Show"))
+                    }
                   >
-                    <span className="material-icons text-xl">delete_outline</span>
+                    <span className="material-icons text-xl">
+                      {property.is_active ? "visibility" : "visibility_off"}
+                    </span>
                   </button>
                 </div>
               </div>

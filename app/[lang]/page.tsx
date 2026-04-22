@@ -37,16 +37,24 @@ export default async function Home(props: {
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
+  const hasFilters = !!(location || minPrice || maxPrice || (type && type !== 'Any Type') || beds || baths);
+
   const { data: featuredData } = await supabase
     .from('properties')
     .select('*')
-    .eq('is_featured', true);
+    .eq('is_featured', true)
+    .eq('is_active', true);
 
-  let query = supabase.from('properties').select('*', { count: 'exact' }).eq('is_featured', false);
+  let query = supabase.from('properties').select('*', { count: 'exact' }).eq('is_active', true);
+  if (!hasFilters) {
+    query = query.eq('is_featured', false);
+  }
 
   if (location) {
-    // Basic ilike on location or title
-    query = query.or(`location.ilike.%${location}%,title.ilike.%${location}%`);
+    const searchTerm = location.trim();
+    if (searchTerm) {
+      query = query.or(`location.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
+    }
   }
   if (minPrice) {
     query = query.gte('price', minPrice);
@@ -87,8 +95,6 @@ export default async function Home(props: {
 
   const featuredProperties = (featuredData || []).map(mapProperty);
   const standardProperties = (propertiesData || []).map(mapProperty);
-
-  const hasFilters = !!(location || minPrice || maxPrice || (type && type !== 'Any Type') || beds || baths);
 
   const buildPageUrl = (p: number) => {
     const params = new URLSearchParams();

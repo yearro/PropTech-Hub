@@ -47,6 +47,7 @@ interface PropertyForm {
   baths: number;
   parking: number;
   is_featured: boolean;
+  is_active: boolean;
   amenities: string[];
 }
 
@@ -67,6 +68,7 @@ const defaultForm: PropertyForm = {
   baths: 1,
   parking: 0,
   is_featured: false,
+  is_active: true,
   amenities: [],
 };
 
@@ -123,6 +125,7 @@ export default function PropertyFormPage(props: {
         baths: data.baths ?? 1,
         parking: data.parking ?? 0,
         is_featured: data.is_featured ?? false,
+        is_active: data.is_active ?? true,
         amenities: data.amenities ?? [],
       });
       setCharCount((data.description ?? "").length);
@@ -310,6 +313,7 @@ export default function PropertyFormPage(props: {
       baths: form.baths,
       parking: form.parking,
       is_featured: form.is_featured,
+      is_active: form.is_active,
       amenities: form.amenities,
       images: imageUrls,
     };
