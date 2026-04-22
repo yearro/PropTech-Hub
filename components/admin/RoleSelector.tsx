@@ -69,7 +69,7 @@ export function RoleSelector({ userId, currentRole, onRoleChange, lang, dict, cu
               ? "bg-mosque text-white border-mosque" 
               : "border-nordic-dark/10 bg-white dark:bg-gray-800 text-nordic-dark hover:bg-nordic-dark hover:text-white"
         }`}
-        title={isSelf ? (lang === 'es' ? "No puedes cambiar tu propio rol" : "You cannot change your own role") : undefined}
+        title={isSelf ? (dict.admin.users.self_role_warning) : undefined}
       >
         {loading ? dict.admin.users.updating : dict.admin.users.change_role}
         <span className="material-icons text-[16px] ml-2">{isOpen ? "expand_less" : "expand_more"}</span>
@@ -102,7 +102,7 @@ export function RoleSelector({ userId, currentRole, onRoleChange, lang, dict, cu
                 onClick={() => setIsOpen(false)}
               >
                 <span className="material-icons text-sm mr-3 text-red-300 group-hover:text-red-100">block</span>
-                {lang === 'es' ? 'Suspender Usuario' : 'Suspend User'}
+                {dict.admin.users.suspend_user}
               </button>
             </div>
           </div>

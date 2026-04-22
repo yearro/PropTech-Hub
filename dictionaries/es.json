@@ -181,7 +181,9 @@
       "saved_success": "¡Propiedad guardada correctamente!",
       "save_error": "Error al guardar la propiedad. Intenta de nuevo.",
       "upload_error": "Error al subir imagen. Intenta de nuevo.",
-      "delete_confirm": "¿Seguro que quieres eliminar esta imagen?"
+      "delete_confirm": "¿Seguro que quieres eliminar esta imagen?",
+      "assigned_agent": "Agente Asignado",
+      "select_agent": "— Seleccionar agente —"
     },
     "users": {
       "title": "Directorio de Usuarios",
@@ -189,12 +191,14 @@
       "add_user": "Agregar Usuario",
       "search_placeholder": "Buscar por nombre, email...",
       "modal_title": "Nuevo Usuario",
+      "edit_modal_title": "Editar Usuario",
       "full_name": "Nombre Completo",
       "email": "Correo Electrónico",
       "phone": "Teléfono",
       "role": "Rol",
       "cancel": "Cancelar",
       "save": "Guardar Usuario",
+      "save_changes": "Guardar Cambios",
       "saving": "Guardando...",
       "roles": {
         "admin": "Administrador",
@@ -207,7 +211,23 @@
       "showing": "Mostrando",
       "users_count": "usuarios",
       "change_role": "Cambiar Rol",
-      "updating": "Actualizando..."
+      "updating": "Actualizando...",
+      "all": "Todos",
+      "user_details": "Detalles de Usuario",
+      "role_status": "Rol y Estado",
+      "activity": "Actividad",
+      "actions": "Acciones",
+      "joined": "Ingreso",
+      "status": "Estado",
+      "active": "Activo",
+      "new_user": "Nuevo Usuario",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "suspend_user": "Suspender Usuario",
+      "self_role_warning": "No puedes cambiar tu propio rol",
+      "edit_user": "Editar",
+      "edit_success": "Usuario actualizado correctamente",
+      "edit_error": "Error al actualizar usuario"
     }
   }
 }

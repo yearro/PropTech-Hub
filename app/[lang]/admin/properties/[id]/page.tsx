@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { supabase } from "@/utils/supabase";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Locale } from "@/lib/i18n/config";
+import { getAvatarFallback } from "@/utils/avatarFallback";
 
 const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
@@ -49,6 +50,7 @@ interface PropertyForm {
   is_featured: boolean;
   is_active: boolean;
   amenities: string[];
+  agent_id: string;
 }
 
 const defaultForm: PropertyForm = {
@@ -70,6 +72,7 @@ const defaultForm: PropertyForm = {
   is_featured: false,
   is_active: true,
   amenities: [],
+  agent_id: "",
 };
 
 export default function PropertyFormPage(props: {
@@ -92,9 +95,27 @@ export default function PropertyFormPage(props: {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
+  // Agents/brokers list for assignment
+  interface AgentOption {
+    id: string;
+    full_name: string | null;
+    email: string | null;
+    avatar_url: string | null;
+    role: string | null;
+  }
+  const [agents, setAgents] = useState<AgentOption[]>([]);
+
   // ── Load dictionary ──────────────────────────────────────────────────────────
   useEffect(() => {
     getDictionary(lang).then(setDict);
+    // Fetch agents/brokers for the assignment dropdown
+    supabase
+      .from("profiles")
+      .select("id, full_name, email, avatar_url, role")
+      .in("role", ["admin", "broker", "agent"])
+      .then(({ data }) => {
+        if (data) setAgents(data);
+      });
   }, [lang]);
 
   // ── Load existing property for edit ─────────────────────────────────────────
@@ -127,6 +148,7 @@ export default function PropertyFormPage(props: {
         is_featured: data.is_featured ?? false,
         is_active: data.is_active ?? true,
         amenities: data.amenities ?? [],
+        agent_id: data.agent_id ?? "",
       });
       setCharCount((data.description ?? "").length);
 
@@ -316,6 +338,7 @@ export default function PropertyFormPage(props: {
       is_active: form.is_active,
       amenities: form.amenities,
       images: imageUrls,
+      agent_id: form.agent_id || null,
     };
 
     let error;
@@ -913,6 +936,56 @@ export default function PropertyFormPage(props: {
               </div>
             </div>
           </div>
+
+          {/* Assigned Agent */}
+          <FormCard icon="person" title={t.assigned_agent || "Agente Asignado"} small>
+            <div className="p-6 space-y-4">
+              <div>
+                <label
+                  className="block text-sm font-medium text-nordic mb-1.5 font-sf-pro"
+                  htmlFor="prop-agent"
+                >
+                  {t.assigned_agent || "Agente / Broker Responsable"}
+                </label>
+                <select
+                  id="prop-agent"
+                  value={form.agent_id}
+                  onChange={(e) => setField("agent_id", e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-sm font-sf-pro cursor-pointer outline-none"
+                >
+                  <option value="">{t.select_agent || "— Seleccionar agente —"}</option>
+                  {agents.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.full_name || a.email} ({a.role})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Preview of selected agent */}
+              {form.agent_id && (() => {
+                const selected = agents.find((a) => a.id === form.agent_id);
+                if (!selected) return null;
+                return (
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-hint-green/20 border border-mosque/10">
+                    <img
+                      src={selected.avatar_url || getAvatarFallback(selected.full_name)}
+                      alt={selected.full_name || "Agent"}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                      onError={(e) => { (e.target as HTMLImageElement).src = getAvatarFallback(selected.full_name); }}
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-nordic truncate">{selected.full_name || "Sin nombre"}</p>
+                      <p className="text-xs text-gray-500 truncate">{selected.email}</p>
+                    </div>
+                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider bg-mosque/10 text-mosque px-2 py-0.5 rounded">
+                      {selected.role}
+                    </span>
+                  </div>
+                );
+              })()}
+            </div>
+          </FormCard>
         </div>
       </form>
 

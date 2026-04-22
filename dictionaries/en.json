@@ -181,7 +181,9 @@
       "saved_success": "Property saved successfully!",
       "save_error": "Error saving property. Please try again.",
       "upload_error": "Error uploading image. Please try again.",
-      "delete_confirm": "Are you sure you want to delete this image?"
+      "delete_confirm": "Are you sure you want to delete this image?",
+      "assigned_agent": "Assigned Agent",
+      "select_agent": "— Select agent —"
     },
     "users": {
       "title": "User Directory",
@@ -189,12 +191,14 @@
       "add_user": "Add User",
       "search_placeholder": "Search by name, email...",
       "modal_title": "New User",
+      "edit_modal_title": "Edit User",
       "full_name": "Full Name",
       "email": "Email Address",
       "phone": "Phone Number",
       "role": "Role",
       "cancel": "Cancel",
       "save": "Save User",
+      "save_changes": "Save Changes",
       "saving": "Saving...",
       "roles": {
         "admin": "Administrator",
@@ -207,7 +211,23 @@
       "showing": "Showing",
       "users_count": "users",
       "change_role": "Change Role",
-      "updating": "Updating..."
+      "updating": "Updating...",
+      "all": "All",
+      "user_details": "User Details",
+      "role_status": "Role & Status",
+      "activity": "Activity",
+      "actions": "Actions",
+      "joined": "Joined",
+      "status": "Status",
+      "active": "Active",
+      "new_user": "New User",
+      "previous": "Previous",
+      "next": "Next",
+      "suspend_user": "Suspend User",
+      "self_role_warning": "You cannot change your own role",
+      "edit_user": "Edit",
+      "edit_success": "User updated successfully",
+      "edit_error": "Error updating user"
     }
   }
 }

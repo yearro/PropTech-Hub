@@ -28,18 +28,37 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<{ role: string } | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single()
+          .then(({ data }) => setProfile(data));
+      }
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single()
+          .then(({ data }) => setProfile(data));
+      } else {
+        setProfile(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -53,7 +72,9 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
 
   const navItems = [
     { name: dict.admin.nav.properties, href: `/${lang}/admin/properties`, icon: "house_siding" },
-    { name: dict.admin.nav.users, href: `/${lang}/admin/users`, icon: "people" },
+    ...(profile?.role === "admin"
+      ? [{ name: dict.admin.nav.users, href: `/${lang}/admin/users`, icon: "people" }]
+      : []),
   ];
 
   return (

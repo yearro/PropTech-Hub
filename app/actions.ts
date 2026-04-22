@@ -75,3 +75,26 @@ export async function updateUserRole(userId: string, newRole: string) {
   console.log('[Server Action] Successfully updated role for:', userId);
   return { success: true, data };
 }
+
+export async function updateUserProfile(userId: string, userData: {
+  full_name?: string;
+  email?: string;
+  phone?: string | null;
+}) {
+  console.log('[Server Action] Attempting to update profile for:', userId);
+
+  const { data, error } = await supabaseServer
+    .from('profiles')
+    .update(userData)
+    .eq('id', userId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('[Server Action] Error in updateUserProfile:', error);
+    return { success: false, error: error.message };
+  }
+
+  console.log('[Server Action] Successfully updated profile for:', userId);
+  return { success: true, data };
+}

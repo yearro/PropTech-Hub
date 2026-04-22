@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Property } from "@/types";
 import { ImageGallery } from "@/components/properties/ImageGallery";
+import { AgentCard } from "@/components/properties/AgentCard";
 
 import { LazyMap } from "@/components/properties/LazyMap";
 
@@ -85,49 +86,20 @@ export default async function PropertyDetails({ params }: Props) {
                 </div>
                 <div className="h-px bg-slate-100 my-6"></div>
                 {property.agent && (
-                  <div className="flex items-center gap-4 mb-6">
-                    <img
-                      alt={property.agent.full_name || "Agent"}
-                      className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
-                      src={property.agent.avatar_url || "https://ui-avatars.com/api/?background=0d6e6e&color=fff&bold=true&size=128&name=" + encodeURIComponent(property.agent.full_name || "Agent")}
-                      onError={(e) => { (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?background=0d6e6e&color=fff&bold=true&size=128&name=" + encodeURIComponent(property.agent.full_name || "Agent"); }}
-                    />
-                    <div>
-                      <h3 className="font-semibold text-nordic-dark">{property.agent.full_name || "Agente Inmobiliario"}</h3>
-                      <div className="flex items-center gap-1 text-xs text-mosque font-medium">
-                        <span className="material-icons text-[14px]">star</span>
-                        <span>{property.agent.role === 'broker' ? 'Broker Destacado' : dict.property_details.top_rated || 'Agente Destacado'}</span>
-                      </div>
-                    </div>
-                    <div className="ml-auto flex gap-2">
-                      <a href={property.agent.email ? `mailto:${property.agent.email}` : '#'} className="p-2 rounded-full bg-mosque/10 text-mosque hover:bg-mosque hover:text-white transition-colors flex items-center justify-center">
-                        <span className="material-icons text-sm">chat</span>
-                      </a>
-                      <a href={property.agent.phone ? `tel:${property.agent.phone}` : '#'} className="p-2 rounded-full bg-mosque/10 text-mosque hover:bg-mosque hover:text-white transition-colors flex items-center justify-center">
-                        <span className="material-icons text-sm">call</span>
-                      </a>
-                    </div>
-                  </div>
+                  <AgentCard agent={property.agent} dict={dict.property_details} />
                 )}
-
-                <div className="space-y-3">
-                  <button className="w-full bg-mosque hover:bg-primary-hover text-white py-4 px-6 rounded-lg font-medium transition-all shadow-lg shadow-mosque/20 flex items-center justify-center gap-2 group">
-                    <span className="material-icons text-xl group-hover:scale-110 transition-transform">calendar_today</span>
-                    {dict.property_details.schedule_visit}
-                  </button>
-                  {property.agent?.email && (
-                    <a href={`mailto:${property.agent.email}`} className="w-full bg-transparent border border-nordic-dark/10 hover:border-mosque text-nordic-dark/80 hover:text-mosque py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
-                      <span className="material-icons text-xl">mail_outline</span>
-                      {dict.property_details.contact_agent}
-                    </a>
-                  )}
-                  {!property.agent?.email && (
+                {!property.agent && (
+                  <div className="space-y-3">
+                    <button className="w-full bg-mosque hover:bg-primary-hover text-white py-4 px-6 rounded-lg font-medium transition-all shadow-lg shadow-mosque/20 flex items-center justify-center gap-2 group">
+                      <span className="material-icons text-xl group-hover:scale-110 transition-transform">calendar_today</span>
+                      {dict.property_details.schedule_visit}
+                    </button>
                     <button className="w-full bg-transparent border border-nordic-dark/10 hover:border-mosque text-nordic-dark/80 hover:text-mosque py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
                       <span className="material-icons text-xl">mail_outline</span>
                       {dict.property_details.contact_agent}
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               
               <div className="bg-white p-2 rounded-xl shadow-sm border border-mosque/5">
