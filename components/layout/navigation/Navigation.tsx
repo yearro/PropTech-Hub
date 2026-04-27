@@ -13,10 +13,6 @@ import { getAvatarFallback } from "@/utils/avatarFallback";
 
 interface NavigationProps {
   dict: {
-    buy: string;
-    rent: string;
-    sell: string;
-    saved: string;
     login: string;
     user_menu: {
       profile: string;
@@ -87,21 +83,6 @@ export function Navigation({ dict, lang }: NavigationProps) {
               LuxeEstate
             </span>
           </Link>
-
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="#" className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all">
-              {dict.buy}
-            </Link>
-            <Link href="#" className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all">
-              {dict.rent}
-            </Link>
-            <Link href="#" className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all">
-              {dict.sell}
-            </Link>
-            <Link href="#" className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all">
-              {dict.saved}
-            </Link>
-          </div>
 
           <div className="flex items-center space-x-6">
             <div className="hidden sm:block">
@@ -240,18 +221,7 @@ export function Navigation({ dict, lang }: NavigationProps) {
       {/* Mobile Menu */}
       <div className={`md:hidden border-t border-nordic-dark/5 bg-background-light overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? 'h-auto py-2' : 'h-0'}`}>
         <div className="px-4 space-y-1 pb-4">
-          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5">
-            {dict.buy}
-          </Link>
-          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5">
-            {dict.rent}
-          </Link>
-          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5">
-            {dict.sell}
-          </Link>
-          <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5">
-            {dict.saved}
-          </Link>
+
           <div className="pt-4 px-3">
             <LanguageSelector currentLang={lang} />
           </div>

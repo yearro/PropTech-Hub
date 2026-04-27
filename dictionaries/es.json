@@ -1,9 +1,5 @@
 {
   "nav": {
-    "buy": "Comprar",
-    "rent": "Rentar",
-    "sell": "Vender",
-    "saved": "Guardados",
     "login": "Acceder"
   },
   "home": {

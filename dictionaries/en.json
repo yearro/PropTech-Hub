@@ -1,9 +1,5 @@
 {
   "nav": {
-    "buy": "Buy",
-    "rent": "Rent",
-    "sell": "Sell",
-    "saved": "Saved Homes",
     "login": "Sign In"
   },
   "home": {

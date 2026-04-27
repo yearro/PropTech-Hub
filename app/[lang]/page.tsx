@@ -3,15 +3,16 @@ import { PropertyCard } from "@/components/home/property-card";
 import { supabase } from "@/utils/supabase";
 import { Property } from "@/types";
 import Link from "next/link";
+import Image from "next/image";
 import { FiltersAction } from "@/components/home/filters-action";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Locale } from "@/lib/i18n/config";
 
 import { MainSearch } from "@/components/home/main-search";
 
-export default async function Home(props: { 
+export default async function Home(props: {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ 
+  searchParams: Promise<{
     page?: string;
     location?: string;
     minPrice?: string;
@@ -19,7 +20,7 @@ export default async function Home(props: {
     type?: string;
     beds?: string;
     baths?: string;
-  }> 
+  }>
 }) {
   const { lang } = await props.params;
   const searchParams = await props.searchParams;
@@ -109,8 +110,8 @@ export default async function Home(props: {
   };
 
   return (
-    <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10">
-      <section className="py-12 md:py-16 w-full max-w-[950px] mx-auto">
+    <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <section className="py-3 w-full max-w-[950px] mx-auto">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-nordic-dark leading-tight">
             {dict.home.title}{" "}
@@ -120,11 +121,13 @@ export default async function Home(props: {
             </span>
             .
           </h1>
-
-          <MainSearch 
-            lang={lang} 
-            placeholder={dict.home.search_placeholder} 
-            buttonText={dict.home.search_button} 
+          <div className="flex justify-center m-5 ">
+            <Image src="/images/buildings.png" alt="Mosque" width={504} height={307} />
+          </div>
+          <MainSearch
+            lang={lang}
+            placeholder={dict.home.search_placeholder}
+            buttonText={dict.home.search_button}
           />
 
           <div className="flex items-center justify-center gap-3 overflow-x-auto hide-scroll py-2 px-4 -mx-4">
@@ -173,9 +176,9 @@ export default async function Home(props: {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             {featuredProperties.map((property) => (
-              <FeaturedPropertyCard 
-                key={property.id} 
-                property={property} 
+              <FeaturedPropertyCard
+                key={property.id}
+                property={property}
                 lang={lang}
                 dict={dict}
               />
@@ -199,15 +202,15 @@ export default async function Home(props: {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start auto-rows-max">
           {standardProperties.map(property => (
-            <PropertyCard 
-              key={property.id} 
-              property={property} 
+            <PropertyCard
+              key={property.id}
+              property={property}
               lang={lang}
               dict={dict}
             />
           ))}
         </div>
-        
+
         <div className="mt-12 flex justify-center items-center gap-2">
           {page > 1 && (
             <Link href={buildPageUrl(page - 1)} scroll={false}>
@@ -216,17 +219,16 @@ export default async function Home(props: {
               </button>
             </Link>
           )}
-          
+
           {Array.from({ length: totalPages }).map((_, i) => {
             const pageNum = i + 1;
             return (
               <Link key={pageNum} href={buildPageUrl(pageNum)} scroll={false}>
                 <button
-                  className={`flex items-center justify-center w-12 h-12 rounded-lg text-sm font-medium transition-all ${
-                    pageNum === page
-                      ? "bg-nordic-dark text-white border-transparent shadow-md hover:bg-nordic-dark/90"
-                      : "bg-white border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark"
-                  }`}
+                  className={`flex items-center justify-center w-12 h-12 rounded-lg text-sm font-medium transition-all ${pageNum === page
+                    ? "bg-nordic-dark text-white border-transparent shadow-md hover:bg-nordic-dark/90"
+                    : "bg-white border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark"
+                    }`}
                 >
                   {pageNum}
                 </button>
