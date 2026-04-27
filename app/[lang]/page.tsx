@@ -1,4 +1,4 @@
-import { FeaturedPropertyCard } from "@/components/home/featured-property-card";
+import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { PropertyCard } from "@/components/home/property-card";
 import { supabase } from "@/utils/supabase";
 import { Property } from "@/types";
@@ -174,16 +174,11 @@ export default async function Home(props: {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            {featuredProperties.map((property) => (
-              <FeaturedPropertyCard
-                key={property.id}
-                property={property}
-                lang={lang}
-                dict={dict}
-              />
-            ))}
-          </div>
+          <FeaturedCarousel
+            properties={featuredProperties}
+            lang={lang}
+            dict={dict}
+          />
         </section>
       )}
 
@@ -192,11 +187,6 @@ export default async function Home(props: {
           <div>
             <h2 className="text-2xl font-light text-nordic-dark">{dict.home.new_market}</h2>
             <p className="text-nordic-muted mt-1 text-sm">{dict.home.new_market_subtitle}</p>
-          </div>
-          <div className="hidden md:flex bg-white p-1 rounded-lg">
-            <button className="px-4 py-1.5 rounded-md text-sm font-medium bg-nordic-dark text-white shadow-sm">{dict.home.all}</button>
-            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark dark:hover:text-white transition-colors">{dict.nav.buy}</button>
-            <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark dark:hover:text-white transition-colors">{dict.nav.rent}</button>
           </div>
         </div>
 
