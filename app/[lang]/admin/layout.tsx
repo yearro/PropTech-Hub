@@ -3,7 +3,7 @@
 import { AdminNav } from "@/components/admin/AdminNav";
 import { Locale } from "@/lib/i18n/config";
 import { supabase } from "@/utils/supabase";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
@@ -17,6 +17,7 @@ export default function AdminLayout({
   const params = use(paramsPromise);
   const lang = params.lang as Locale;
   const router = useRouter();
+  const pathname = usePathname();
    const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dict, setDict] = useState<any>(null);
@@ -56,9 +57,11 @@ export default function AdminLayout({
         }
 
         console.log("[AdminLayout] Profile role:", profile?.role);
+        
+        const isFavoritesPage = pathname?.includes("/admin/favorites");
 
-        if (profile?.role !== 'admin') {
-          console.log("[AdminLayout] Not an admin, redirecting...");
+        if (profile?.role !== 'admin' && !isFavoritesPage) {
+          console.log("[AdminLayout] Not an admin and not on favorites page, redirecting...");
           if (mounted) router.push(`/${lang}`);
           return;
         }

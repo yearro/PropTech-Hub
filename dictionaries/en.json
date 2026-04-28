@@ -96,6 +96,7 @@
     "admin_dashboard": "Properties",
     "admin_properties": "Manage Properties",
     "admin_users": "Manage Users",
+    "favorites": "Favorites",
     "sign_out": "Sign Out"
   },
   "admin": {
@@ -103,6 +104,7 @@
       "title": "Admin Panel",
       "properties": "Properties",
       "users": "Users",
+      "favorites": "Favorites",
       "session": "Session",
       "sign_out": "Sign Out",
       "property_management": "LuxeEstate Property Management"
@@ -224,6 +226,22 @@
       "edit_user": "Edit",
       "edit_success": "User updated successfully",
       "edit_error": "Error updating user"
+    },
+    "favorites": {
+      "title": "My Favorites",
+      "subtitle": "Properties you've fallen in love with.",
+      "empty_title": "No favorites yet",
+      "empty_subtitle": "Explore our properties and click the heart icon to save them here.",
+      "remove_confirm": "Are you sure you want to remove this property from your favorites?",
+      "removed_success": "Property removed from favorites",
+      "add_favorite": "Add to favorites",
+      "remove_favorite": "Remove from favorites",
+      "table_property": "Property Details",
+      "table_price": "Price",
+      "table_status": "Status",
+      "table_actions": "Actions",
+      "view_details": "View Details",
+      "stats_total": "Total favorites"
     }
   }
 }

@@ -20,6 +20,7 @@ interface NavigationProps {
       admin_dashboard: string;
       admin_properties: string;
       admin_users: string;
+      favorites: string;
       sign_out: string;
     };
   };
@@ -157,6 +158,15 @@ export function Navigation({ dict, lang }: NavigationProps) {
                       >
                         <span className="material-icons text-lg">settings</span>
                         {dict.user_menu.settings}
+                      </Link>
+                      
+                      <Link 
+                        href={`/${lang}/admin/favorites`} 
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-nordic-dark/80 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <span className="material-icons text-lg">favorite_outline</span>
+                        {dict.user_menu.favorites}
                       </Link>
                       
                       {role === 'admin' && (

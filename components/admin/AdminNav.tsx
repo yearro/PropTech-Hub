@@ -17,6 +17,7 @@ interface AdminNavProps {
         title: string;
         properties: string;
         users: string;
+        favorites: string;
         session: string;
         sign_out: string;
       };
@@ -71,7 +72,10 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
   };
 
   const navItems = [
-    { name: dict.admin.nav.properties, href: `/${lang}/admin/properties`, icon: "house_siding" },
+    ...(profile?.role === "admin"
+      ? [{ name: dict.admin.nav.properties, href: `/${lang}/admin/properties`, icon: "house_siding" }]
+      : []),
+    { name: dict.admin.nav.favorites, href: `/${lang}/admin/favorites`, icon: "favorite" },
     ...(profile?.role === "admin"
       ? [{ name: dict.admin.nav.users, href: `/${lang}/admin/users`, icon: "people" }]
       : []),

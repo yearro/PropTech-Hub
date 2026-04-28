@@ -1,6 +1,7 @@
 import { Property } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { FavoriteButton } from "@/components/ui/FavoriteButton";
 
 export function PropertyCard({ property, lang, dict }: { property: Property; lang: string; dict: any }) {
   return (
@@ -13,9 +14,14 @@ export function PropertyCard({ property, lang, dict }: { property: Property; lan
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
-        <button className="absolute top-3 right-3 p-2 bg-white/90 rounded-full hover:bg-mosque hover:text-white transition-colors text-nordic-dark z-10">
-          <span className="material-icons text-lg">favorite_border</span>
-        </button>
+        <div className="absolute top-3 right-3 z-10">
+          <FavoriteButton 
+            propertyId={property.id} 
+            lang={lang} 
+            addLabel={dict.admin.favorites.add_favorite}
+            removeLabel={dict.admin.favorites.remove_favorite}
+          />
+        </div>
         <div 
           className={`absolute bottom-3 left-3 text-white text-xs font-bold px-2 py-1 rounded z-10 ${
             property.type === "FOR SALE" ? "bg-nordic-dark/90" : "bg-mosque/90"
