@@ -41,21 +41,18 @@ export function Navigation({ dict, lang }: NavigationProps) {
   const router = useRouter();
 
   const fetchPendingCount = async (userId: string, userRole: string) => {
-    let query = supabase
-      .from("appointments")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "pending");
-
-    if (userRole === "viewer") {
+    // Only Agents and Brokers receive notification badges for their appointments
+    if (userRole === "admin" || userRole === "viewer") {
       setPendingCount(0);
       return;
     }
 
-    if (userRole !== "admin") {
-      query = query.eq("agent_id", userId);
-    }
+    const { count } = await supabase
+      .from("appointments")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "pending")
+      .eq("agent_id", userId);
 
-    const { count } = await query;
     setPendingCount(count || 0);
   };
 

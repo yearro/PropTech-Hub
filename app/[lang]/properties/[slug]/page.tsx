@@ -11,6 +11,8 @@ import { LazyMap } from "@/components/properties/LazyMap";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Locale } from "@/lib/i18n/config";
 
+import { PropertySidebar } from "@/components/properties/PropertySidebar";
+
 // Next.js 15 requires awaiting params
 type Props = {
   params: Promise<{ slug: string; lang: string }>;
@@ -54,17 +56,6 @@ export default async function PropertyDetails({ params }: Props) {
     notFound();
   }
 
-  const { data: { user } } = await supabase.auth.getUser();
-  let userRole = null;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-    userRole = profile?.role;
-  }
-
   // Handle camelCase mapping vs raw db snake_case
   const property: Property = {
     ...data,
@@ -76,7 +67,8 @@ export default async function PropertyDetails({ params }: Props) {
 
   return (
     <div className="bg-background-light min-h-screen text-nordic-dark selection:bg-mosque/20">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
           <div className="lg:col-span-8 space-y-4">
             <ImageGallery images={images} title={property.title} dict={dict.property_details} />
@@ -84,52 +76,7 @@ export default async function PropertyDetails({ params }: Props) {
 
           <div className="lg:col-span-4 relative">
             <div className="sticky top-28 space-y-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-mosque/5">
-                <div className="mb-4">
-                  <h1 className="text-4xl font-display font-light text-nordic-dark mb-2">
-                    ${property.price.toLocaleString()}
-                    {property.type === "FOR RENT" ? <span className="text-xl text-nordic-muted">{dict.common.per_month}</span> : ""}
-                  </h1>
-                  <p className="text-nordic-dark/60 font-medium flex items-center gap-1">
-                    <span className="material-icons text-mosque text-sm">location_on</span>
-                    {property.location}
-                  </p>
-                </div>
-                <div className="h-px bg-slate-100 my-6"></div>
-                {property.agent && (
-                  <AgentCard 
-                    agent={property.agent} 
-                    dict={dict.property_details} 
-                    appointmentsDict={dict.appointments}
-                    userRole={userRole}
-                    viewerId={user?.id || null}
-                    propertyId={property.id}
-                    propertyTitle={property.title}
-                  />
-                )}
-                {!property.agent && (
-                  <div className="space-y-3">
-                    <button className="w-full bg-mosque hover:bg-primary-hover text-white py-4 px-6 rounded-lg font-medium transition-all shadow-lg shadow-mosque/20 flex items-center justify-center gap-2 group">
-                      <span className="material-icons text-xl group-hover:scale-110 transition-transform">calendar_today</span>
-                      {dict.property_details.schedule_visit}
-                    </button>
-                    <button className="w-full bg-transparent border border-nordic-dark/10 hover:border-mosque text-nordic-dark/80 hover:text-mosque py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
-                      <span className="material-icons text-xl">mail_outline</span>
-                      {dict.property_details.contact_agent}
-                    </button>
-                  </div>
-                )}
-              </div>
-              
-              <div className="bg-white p-2 rounded-xl shadow-sm border border-mosque/5">
-                <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-slate-100">
-                  <LazyMap 
-                    locationText={property.location} 
-                    latitude={data.latitude}
-                    longitude={data.longitude}
-                  />
-                </div>
-              </div>
+              <PropertySidebar property={property} dict={dict} lang={lang} />
             </div>
           </div>
         </div>

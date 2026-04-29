@@ -84,7 +84,9 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
     ...(profile?.role === "admin"
       ? [{ name: dict.admin.settings.title, href: `/${lang}/admin/settings`, icon: "settings" }]
       : []),
-    { name: dict.admin.nav.appointments, href: `/${lang}/admin/appointments`, icon: "calendar_today" },
+    ...(profile?.role !== "admin"
+      ? [{ name: dict.admin.nav.appointments, href: `/${lang}/admin/appointments`, icon: "calendar_today" }]
+      : []),
     { name: dict.admin.nav.profile, href: `/${lang}/admin/profile`, icon: "person" },
   ];
 

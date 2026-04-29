@@ -61,8 +61,15 @@ export default function AdminLayout({
         const isFavoritesPage = pathname?.includes("/admin/favorites");
         const isProfilePage = pathname?.includes("/admin/profile");
         const isPropertiesPage = pathname?.includes("/admin/properties");
+        const isAppointmentsPage = pathname?.includes("/admin/appointments");
 
-        const isAllowedUserPage = isFavoritesPage || isProfilePage || (isPropertiesPage && (profile?.role === 'agent' || profile?.role === 'broker'));
+        // Admin cannot access appointments
+        if (profile?.role === 'admin' && isAppointmentsPage) {
+          if (mounted) router.push(`/${lang}/admin/properties`);
+          return;
+        }
+
+        const isAllowedUserPage = isFavoritesPage || isProfilePage || isAppointmentsPage || (isPropertiesPage && (profile?.role === 'agent' || profile?.role === 'broker'));
 
         if (profile?.role !== 'admin' && !isAllowedUserPage) {
           console.log("[AdminLayout] Not authorized for this page, redirecting...");
