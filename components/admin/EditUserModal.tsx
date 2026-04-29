@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
-import { updateUserProfile, updateUserRole } from "@/app/actions";
+import { supabase } from "@/utils/supabase";
 import { useRouter } from "next/navigation";
 
 interface EditUserModalProps {
@@ -72,28 +72,24 @@ export function EditUserModal({ isOpen, onClose, lang, dict, user, currentUserId
         ? `${formData.countryCode} ${formData.phoneNumber.trim()}`
         : null;
 
-      // Update profile info
-      const { success, error, data } = await updateUserProfile(user.id, {
-        full_name: formData.full_name,
-        email: formData.email,
-        phone,
-      });
+      // Update profile info directly from client to use browser session for RLS
+      const { data: updatedData, error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: formData.full_name,
+          email: formData.email,
+          phone,
+          role: !isSelf ? formData.role : user.role // Update role here too if admin
+        })
+        .eq('id', user.id)
+        .select()
+        .single();
 
-      if (!success) {
-        throw new Error(error || dict.admin.users.edit_error);
+      if (updateError) {
+        throw new Error(updateError.message);
       }
 
-      // Update role if changed (and not self)
-      let finalData = data;
-      if (formData.role !== user.role && !isSelf) {
-        const roleRes = await updateUserRole(user.id, formData.role);
-        if (!roleRes.success) {
-          throw new Error(roleRes.error || dict.admin.users.edit_error);
-        }
-        finalData = { ...finalData, role: formData.role };
-      }
-
-      onUserUpdated?.(finalData);
+      onUserUpdated?.(updatedData);
       router.refresh();
       onClose();
     } catch (error: any) {

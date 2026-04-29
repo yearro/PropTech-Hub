@@ -1,6 +1,8 @@
 {
   "nav": {
-    "login": "Sign In"
+    "login": "Sign In",
+    "rent": "Rent",
+    "buy": "Buy"
   },
   "home": {
     "title": "Find your",
@@ -106,6 +108,7 @@
       "users": "Users",
       "favorites": "Favorites",
       "themes": "Themes",
+      "profile": "My Profile",
       "session": "Session",
       "sign_out": "Sign Out",
       "property_management": "LuxeEstate Property Management"
@@ -276,6 +279,23 @@
       "success": "Settings updated successfully!",
       "error": "Error updating settings.",
       "themes_section": "Application Themes"
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Manage your personal information and account settings.",
+      "personal_info": "Personal Information",
+      "full_name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "avatar": "Profile Picture",
+      "upload": "Upload Image",
+      "uploading_img": "Uploading...",
+      "url_label": "Avatar URL",
+      "url_hint": "Or paste a direct URL to an image",
+      "save_changes": "Save Changes",
+      "saving": "Saving...",
+      "success": "Profile updated successfully!",
+      "error": "Error updating profile."
     }
   }
 }

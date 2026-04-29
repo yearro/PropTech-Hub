@@ -11,19 +11,7 @@ import { getAvatarFallback } from "@/utils/avatarFallback";
 
 interface AdminNavProps {
   lang: Locale;
-  dict: {
-    admin: {
-      nav: {
-        title: string;
-        properties: string;
-        users: string;
-        favorites: string;
-        themes: string;
-        session: string;
-        sign_out: string;
-      };
-    };
-  };
+  dict: any;
 }
 
 export function AdminNav({ lang, dict }: AdminNavProps) {
@@ -86,7 +74,7 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
   };
 
   const navItems = [
-    ...(profile?.role === "admin"
+    ...(profile?.role === "admin" || profile?.role === "agent" || profile?.role === "broker"
       ? [{ name: dict.admin.nav.properties, href: `/${lang}/admin/properties`, icon: "house_siding" }]
       : []),
     { name: dict.admin.nav.favorites, href: `/${lang}/admin/favorites`, icon: "favorite" },
@@ -96,6 +84,7 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
     ...(profile?.role === "admin"
       ? [{ name: dict.admin.settings.title, href: `/${lang}/admin/settings`, icon: "settings" }]
       : []),
+    { name: dict.admin.nav.profile, href: `/${lang}/admin/profile`, icon: "person" },
   ];
 
   return (
@@ -120,7 +109,7 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
                 const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
                 return (
                   <Link
-                    key={item.name}
+                    key={item.href}
                     href={item.href}
                     className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${isActive
                         ? "border-mosque text-nordic-dark dark:text-white"

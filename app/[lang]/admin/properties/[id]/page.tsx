@@ -90,6 +90,7 @@ export default function PropertyFormPage(props: {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; role: string } | null>(null);
   const [charCount, setCharCount] = useState(0);
   const [geocoding, setGeocoding] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -108,6 +109,25 @@ export default function PropertyFormPage(props: {
   // ── Load dictionary ──────────────────────────────────────────────────────────
   useEffect(() => {
     getDictionary(lang).then(setDict);
+    // Fetch current user
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.id) {
+        supabase
+          .from("profiles")
+          .select("id, role")
+          .eq("id", session.user.id)
+          .single()
+          .then(({ data }) => {
+            if (data) {
+              setCurrentUser({ id: data.id, role: data.role });
+              if (isNew && data.role !== 'admin') {
+                setField("agent_id", data.id);
+              }
+            }
+          });
+      }
+    });
+
     // Fetch agents/brokers for the assignment dropdown
     supabase
       .from("profiles")
@@ -116,7 +136,7 @@ export default function PropertyFormPage(props: {
       .then(({ data }) => {
         if (data) setAgents(data);
       });
-  }, [lang]);
+  }, [lang, isNew]);
 
   // ── Load existing property for edit ─────────────────────────────────────────
   useEffect(() => {
@@ -127,7 +147,15 @@ export default function PropertyFormPage(props: {
         .select("*")
         .eq("id", id)
         .single();
+      
       if (error || !data) return;
+
+      // Ownership check
+      if (currentUser && currentUser.role !== 'admin' && data.agent_id !== currentUser.id) {
+        console.error("Unauthorized access to property");
+        router.push(`/${lang}/admin/properties`);
+        return;
+      }
 
       setForm({
         title: data.title ?? "",
@@ -157,8 +185,8 @@ export default function PropertyFormPage(props: {
       );
       setImages(existingImages);
     }
-    load();
-  }, [id, isNew, dict]);
+    if (currentUser) load();
+  }, [id, isNew, dict, currentUser, lang, router]);
 
   // ── Reverse Geocoding Logic ──────────────────────────────────────────────────
   useEffect(() => {
@@ -283,7 +311,7 @@ export default function PropertyFormPage(props: {
     setSaving(true);
 
     // 1. Generate core slug from user input or title
-    let baseSlug = form.slug?.trim() || form.title.trim();
+    let baseSlug = (form.slug || "").trim() || (form.title || "").trim();
     baseSlug = baseSlug
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-") // replace non-alphanumeric with hyphen
@@ -359,7 +387,7 @@ export default function PropertyFormPage(props: {
     }
   };
 
-  if (!dict) {
+  if (!dict || !currentUser) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mosque" />
@@ -951,7 +979,12 @@ export default function PropertyFormPage(props: {
                   id="prop-agent"
                   value={form.agent_id}
                   onChange={(e) => setField("agent_id", e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-sm font-sf-pro cursor-pointer outline-none"
+                  disabled={currentUser?.role !== "admin"}
+                  className={`w-full px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-sm font-sf-pro outline-none ${
+                    currentUser?.role !== "admin"
+                      ? "bg-gray-50 cursor-not-allowed opacity-80"
+                      : "cursor-pointer"
+                  }`}
                 >
                   <option value="">{t.select_agent || "— Seleccionar agente —"}</option>
                   {agents.map((a) => (

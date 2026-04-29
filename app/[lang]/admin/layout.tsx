@@ -59,9 +59,13 @@ export default function AdminLayout({
         console.log("[AdminLayout] Profile role:", profile?.role);
         
         const isFavoritesPage = pathname?.includes("/admin/favorites");
+        const isProfilePage = pathname?.includes("/admin/profile");
+        const isPropertiesPage = pathname?.includes("/admin/properties");
 
-        if (profile?.role !== 'admin' && !isFavoritesPage) {
-          console.log("[AdminLayout] Not an admin and not on favorites page, redirecting...");
+        const isAllowedUserPage = isFavoritesPage || isProfilePage || (isPropertiesPage && (profile?.role === 'agent' || profile?.role === 'broker'));
+
+        if (profile?.role !== 'admin' && !isAllowedUserPage) {
+          console.log("[AdminLayout] Not authorized for this page, redirecting...");
           if (mounted) router.push(`/${lang}`);
           return;
         }

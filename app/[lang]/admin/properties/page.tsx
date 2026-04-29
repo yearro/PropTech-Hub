@@ -86,6 +86,7 @@ export default function AdminPropertiesPage(props: {
   const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [dict, setDict] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; role: string } | null>(null);
 
   // Filter panel state
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -113,16 +114,34 @@ export default function AdminPropertiesPage(props: {
   // ── dictionary ──────────────────────────────────────────────────────────────
   useEffect(() => {
     getDictionary(lang).then(setDict);
+    // Fetch current user session and role
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.id) {
+        supabase
+          .from("profiles")
+          .select("id, role")
+          .eq("id", session.user.id)
+          .single()
+          .then(({ data }) => {
+            if (data) setCurrentUser({ id: data.id, role: data.role });
+          });
+      }
+    });
   }, [lang]);
 
   // ── Fetch total (unfiltered) ─────────────────────────────────────────────────
   useEffect(() => {
-    if (!dict) return;
-    supabase
+    if (!dict || !currentUser) return;
+    let query = supabase
       .from("properties")
-      .select("id", { count: "exact", head: true })
-      .then(({ count: c }) => setTotalCount(c ?? 0));
-  }, [dict]);
+      .select("id", { count: "exact", head: true });
+    
+    if (currentUser.role !== 'admin') {
+      query = query.eq('agent_id', currentUser.id);
+    }
+    
+    query.then(({ count: c }) => setTotalCount(c ?? 0));
+  }, [dict, currentUser]);
 
   // ── Fetch with filters ──────────────────────────────────────────────────────
   const fetchProperties = useCallback(async () => {
@@ -130,9 +149,14 @@ export default function AdminPropertiesPage(props: {
     try {
       let query = supabase
         .from("properties")
-        .select("id, title, location, price, beds, baths, area, images, type, status, is_active", {
+        .select("id, title, location, price, beds, baths, area, images, type, status, is_active, agent_id", {
           count: "exact",
         });
+
+      // Role-based filtering
+      if (currentUser && currentUser.role !== 'admin') {
+        query = query.eq('agent_id', currentUser.id);
+      }
 
       // Search
       if (appliedFilters.search.trim()) {
@@ -184,11 +208,11 @@ export default function AdminPropertiesPage(props: {
     } finally {
       setLoading(false);
     }
-  }, [appliedFilters, from, to]);
+  }, [appliedFilters, from, to, currentUser]);
 
   useEffect(() => {
-    if (dict) fetchProperties();
-  }, [dict, fetchProperties]);
+    if (dict && currentUser) fetchProperties();
+  }, [dict, fetchProperties, currentUser]);
 
   const totalPages = Math.ceil(count / pageSize);
 
@@ -228,7 +252,7 @@ export default function AdminPropertiesPage(props: {
   const setField = <K extends keyof Filters>(key: K, val: Filters[K]) =>
     setFilters((prev) => ({ ...prev, [key]: val }));
 
-  if (!dict && loading) {
+  if (!dict || !currentUser || (loading && properties.length === 0)) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mosque" />
