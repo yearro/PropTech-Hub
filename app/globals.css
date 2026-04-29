@@ -1,17 +1,46 @@
 @import "tailwindcss";
 
+:root {
+  --theme-primary: #006655;
+  --theme-secondary: #06f9d0;
+  --theme-bg: #EEF6F6;
+  --theme-bg-dark: #0f231f;
+  --theme-text: #19322F;
+  --theme-muted: #5C706D;
+  --theme-hint: #D9ECC8;
+}
+
+[data-theme='midnight'] {
+  --theme-primary: #C5A059;
+  --theme-secondary: #D4AF37;
+  --theme-bg: #121212;
+  --theme-bg-dark: #000000;
+  --theme-text: #E0E0E0;
+  --theme-muted: #888888;
+  --theme-hint: #2A2A2A;
+}
+
+[data-theme='tuscan'] {
+  --theme-primary: #D35400;
+  --theme-secondary: #F39C12;
+  --theme-bg: #FFF8E1;
+  --theme-bg-dark: #F5E6CC;
+  --theme-text: #2C3E50;
+  --theme-muted: #7F8C8D;
+  --theme-hint: #FDEBD0;
+}
+
 @theme inline {
-  /* Added custom colors from guidelines */
-  --color-primary: #06f9d0;
-  --color-background-light: #EEF6F6; /* Clear Day */
-  --color-background-dark: #0f231f;
-  --color-nordic-dark: #19322F;
-  --color-nordic: #19322F;
-  --color-nordic-muted: #5C706D;
-  --color-mosque: #006655;
-  --color-hint-of-green: #D9ECC8;
-  --color-hint-green: #D9ECC8;
-  --color-clear-day: #EEF6F6;
+  --color-primary: var(--theme-secondary);
+  --color-background-light: var(--theme-bg);
+  --color-background-dark: var(--theme-bg-dark);
+  --color-nordic-dark: var(--theme-text);
+  --color-nordic: var(--theme-text);
+  --color-nordic-muted: var(--theme-muted);
+  --color-mosque: var(--theme-primary);
+  --color-hint-of-green: var(--theme-hint);
+  --color-hint-green: var(--theme-hint);
+  --color-clear-day: var(--theme-bg);
 
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -54,11 +83,12 @@
 }
 
 :root {
-  --background: #EEF6F6;
-  --foreground: #19322F;
+  --background: var(--theme-bg);
+  --foreground: var(--theme-text);
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

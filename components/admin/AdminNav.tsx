@@ -18,6 +18,7 @@ interface AdminNavProps {
         properties: string;
         users: string;
         favorites: string;
+        themes: string;
         session: string;
         sign_out: string;
       };
@@ -78,6 +79,9 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
     { name: dict.admin.nav.favorites, href: `/${lang}/admin/favorites`, icon: "favorite" },
     ...(profile?.role === "admin"
       ? [{ name: dict.admin.nav.users, href: `/${lang}/admin/users`, icon: "people" }]
+      : []),
+    ...(profile?.role === "admin"
+      ? [{ name: dict.admin.nav.themes, href: `/${lang}/admin/themes`, icon: "palette" }]
       : []),
   ];
 

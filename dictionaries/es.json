@@ -105,6 +105,7 @@
       "properties": "Propiedades",
       "users": "Usuarios",
       "favorites": "Favoritos",
+      "themes": "Temas",
       "session": "Sesión",
       "sign_out": "Cerrar Sesión",
       "property_management": "Gestión de Propiedades LuxeEstate"
@@ -242,6 +243,26 @@
       "table_actions": "Acciones",
       "view_details": "Ver detalles",
       "stats_total": "Total de favoritos"
+    },
+    "themes": {
+      "title": "Temas de la Aplicación",
+      "subtitle": "Selecciona un estilo visual para toda la plataforma. Esto afectará a todos los usuarios.",
+      "nordic": {
+        "name": "Nórdico (Predeterminado)",
+        "description": "Diseño limpio y moderno con una paleta de colores enfocada."
+      },
+      "midnight": {
+        "name": "Oro de Medianoche",
+        "description": "Tema oscuro elegante con detalles en oro para una sensación premium."
+      },
+      "tuscan": {
+        "name": "Sol de Toscana",
+        "description": "Tonos tierra cálidos y vibrantes inspirados en el Mediterráneo."
+      },
+      "apply": "Aplicar Tema",
+      "applying": "Aplicando...",
+      "success": "¡Tema actualizado correctamente!",
+      "error": "Error al actualizar el tema."
     }
   }
 }

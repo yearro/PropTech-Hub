@@ -105,6 +105,7 @@
       "properties": "Properties",
       "users": "Users",
       "favorites": "Favorites",
+      "themes": "Themes",
       "session": "Session",
       "sign_out": "Sign Out",
       "property_management": "LuxeEstate Property Management"
@@ -242,6 +243,26 @@
       "table_actions": "Actions",
       "view_details": "View Details",
       "stats_total": "Total favorites"
+    },
+    "themes": {
+      "title": "Application Themes",
+      "subtitle": "Select a visual style for the entire platform. This will affect all users.",
+      "nordic": {
+        "name": "Nordic (Default)",
+        "description": "Clean, modern design with a focused color palette."
+      },
+      "midnight": {
+        "name": "Midnight Gold",
+        "description": "Elegant dark theme with gold accents for a premium feel."
+      },
+      "tuscan": {
+        "name": "Tuscan Sun",
+        "description": "Warm and vibrant earthy tones inspired by the Mediterranean."
+      },
+      "apply": "Apply Theme",
+      "applying": "Applying...",
+      "success": "Theme updated successfully!",
+      "error": "Error updating theme."
     }
   }
 }

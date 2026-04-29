@@ -3,6 +3,7 @@ import "./../globals.css";
 import { Navigation } from "@/components/layout/navigation";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Locale } from "@/lib/i18n/config";
+import { supabase } from "@/utils/supabase";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -22,8 +23,22 @@ export default async function RootLayout(props: {
   const { lang } = await props.params;
   const dict = await getDictionary(lang as Locale);
 
+  // Fetch current theme
+  const { data: themeData } = await supabase
+    .from("site_settings")
+    .select("value")
+    .eq("key", "theme")
+    .single();
+  
+  const currentTheme = themeData?.value || "default";
+
   return (
-    <html lang={lang} className="h-full antialiased font-sans selection:bg-mosque selection:text-white" suppressHydrationWarning>
+    <html 
+      lang={lang} 
+      data-theme={currentTheme}
+      className="h-full antialiased font-sans selection:bg-mosque selection:text-white" 
+      suppressHydrationWarning
+    >
       <head>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
