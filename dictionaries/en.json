@@ -263,6 +263,19 @@
       "applying": "Applying...",
       "success": "Theme updated successfully!",
       "error": "Error updating theme."
+    },
+    "settings": {
+      "title": "System Settings",
+      "subtitle": "Manage the appearance and branding of your platform.",
+      "branding_section": "Visual Identity (Branding)",
+      "navbar_title": "Navbar Title",
+      "system_title": "General System Title (Browser Tab)",
+      "logo_section": "Icon Selector (Logo)",
+      "save": "Save Settings",
+      "saving": "Saving...",
+      "success": "Settings updated successfully!",
+      "error": "Error updating settings.",
+      "themes_section": "Application Themes"
     }
   }
 }

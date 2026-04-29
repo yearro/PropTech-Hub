@@ -8,9 +8,17 @@ import { supabase } from "@/utils/supabase";
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const dict = await getDictionary(lang as Locale);
+  // Fetch system title for metadata
+  const { data: titleData } = await supabase
+    .from("site_settings")
+    .select("value")
+    .eq("key", "system_title")
+    .single();
+
+  const systemTitle = titleData?.value || `LuxeEstate - ${lang === 'es' ? 'Bienes Raíces Premium' : 'Premium Real Estate'}`;
   
   return {
-    title: `LuxeEstate - ${lang === 'es' ? 'Bienes Raíces Premium' : 'Premium Real Estate'}`,
+    title: systemTitle,
     description: dict.home.featured_subtitle,
   };
 }

@@ -33,6 +33,8 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
   const [profile, setProfile] = useState<{ role: string } | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [logoIcon, setLogoIcon] = useState("apartment");
+  const [settingsLoading, setSettingsLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -63,6 +65,17 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
       }
     });
 
+
+    supabase
+      .from("site_settings")
+      .select("key, value")
+      .in("key", ["logo_icon"])
+      .single()
+      .then(({ data }) => {
+        if (data?.value) setLogoIcon(data.value);
+        setSettingsLoading(false);
+      });
+
     return () => subscription.unsubscribe();
   }, []);
 
@@ -81,7 +94,7 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
       ? [{ name: dict.admin.nav.users, href: `/${lang}/admin/users`, icon: "people" }]
       : []),
     ...(profile?.role === "admin"
-      ? [{ name: dict.admin.nav.themes, href: `/${lang}/admin/themes`, icon: "palette" }]
+      ? [{ name: dict.admin.settings.title, href: `/${lang}/admin/settings`, icon: "settings" }]
       : []),
   ];
 
@@ -91,7 +104,13 @@ export function AdminNav({ lang, dict }: AdminNavProps) {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link href={`/${lang}`} className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-              <div className="w-8 h-8 rounded bg-mosque flex items-center justify-center text-white font-bold text-lg">P</div>
+              <div className="w-8 h-8 rounded bg-mosque flex items-center justify-center text-white relative overflow-hidden">
+                {settingsLoading ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  <span className="material-icons text-lg animate-in fade-in duration-300">{logoIcon}</span>
+                )}
+              </div>
               <span className="font-bold text-xl tracking-tight text-nordic-dark dark:text-white">
                 {dict.admin.nav.title}
               </span>

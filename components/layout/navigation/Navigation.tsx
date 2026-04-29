@@ -33,6 +33,9 @@ export function Navigation({ dict, lang }: NavigationProps) {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [imgError, setImgError] = useState(false);
+  const [navbarTitle, setNavbarTitle] = useState("LuxeEstate");
+  const [logoIcon, setLogoIcon] = useState("apartment");
+  const [settingsLoading, setSettingsLoading] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -65,6 +68,20 @@ export function Navigation({ dict, lang }: NavigationProps) {
       }
     });
 
+    supabase
+      .from("site_settings")
+      .select("key, value")
+      .in("key", ["navbar_title", "logo_icon"])
+      .then(({ data }) => {
+        if (data) {
+          data.forEach(setting => {
+            if (setting.key === "navbar_title") setNavbarTitle(setting.value);
+            if (setting.key === "logo_icon") setLogoIcon(setting.value);
+          });
+        }
+        setSettingsLoading(false);
+      });
+
     return () => subscription.unsubscribe();
   }, []);
 
@@ -77,12 +94,18 @@ export function Navigation({ dict, lang }: NavigationProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link href={`/${lang}`} className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-            <div className="w-8 h-8 rounded-lg bg-nordic-dark flex items-center justify-center">
-              <span className="material-icons text-white text-lg">apartment</span>
+            <div className="w-8 h-8 rounded-lg bg-nordic-dark flex items-center justify-center relative overflow-hidden">
+              {settingsLoading ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <span className="material-icons text-white text-lg animate-in fade-in duration-300">{logoIcon}</span>
+              )}
             </div>
-            <span className="text-xl font-semibold tracking-tight text-nordic-dark">
-              LuxeEstate
-            </span>
+            <div className={`transition-all duration-300 ${settingsLoading ? 'opacity-0 -translate-x-2' : 'opacity-100 translate-x-0'}`}>
+              <span className="text-xl font-semibold tracking-tight text-nordic-dark">
+                {navbarTitle}
+              </span>
+            </div>
           </Link>
 
           <div className="flex items-center space-x-6">
@@ -152,15 +175,6 @@ export function Navigation({ dict, lang }: NavigationProps) {
                         {dict.user_menu.profile}
                       </Link>
                       <Link 
-                        href="#" 
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-nordic-dark/80 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <span className="material-icons text-lg">settings</span>
-                        {dict.user_menu.settings}
-                      </Link>
-                      
-                      <Link 
                         href={`/${lang}/admin/favorites`} 
                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-nordic-dark/80 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                         onClick={() => setIsUserMenuOpen(false)}
@@ -174,6 +188,14 @@ export function Navigation({ dict, lang }: NavigationProps) {
                           <div className="px-4 py-1.5 text-[10px] font-bold text-mosque/40 uppercase tracking-widest">
                             {dict.user_menu.admin_dashboard}
                           </div>
+                          <Link 
+                            href={`/${lang}/admin/settings`} 
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-mosque font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <span className="material-icons text-lg">settings</span>
+                            {dict.user_menu.settings}
+                          </Link>
                           <Link 
                             href={`/${lang}/admin/properties`} 
                             className="flex items-center gap-3 px-4 py-2.5 text-sm text-mosque font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors"

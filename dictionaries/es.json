@@ -263,6 +263,19 @@
       "applying": "Aplicando...",
       "success": "¡Tema actualizado correctamente!",
       "error": "Error al actualizar el tema."
+    },
+    "settings": {
+      "title": "Ajustes del Sistema",
+      "subtitle": "Gestiona la apariencia y el branding de tu plataforma.",
+      "branding_section": "Identidad Visual (Branding)",
+      "navbar_title": "Título de la Barra de Navegación",
+      "system_title": "Título General del Sistema (Pestaña)",
+      "logo_section": "Selector de Icono (Logo)",
+      "save": "Guardar Ajustes",
+      "saving": "Guardando...",
+      "success": "¡Ajustes actualizados correctamente!",
+      "error": "Error al actualizar los ajustes.",
+      "themes_section": "Temas de la Aplicación"
     }
   }
 }
