@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getAvatarFallback } from "@/utils/avatarFallback";
+import { AppointmentModal } from "./AppointmentModal";
 
 interface AgentCardProps {
   agent: {
@@ -10,16 +11,23 @@ interface AgentCardProps {
     email: string | null;
     phone: string | null;
     role: string | null;
+    id?: string | null;
   };
   dict: {
     top_rated?: string;
     schedule_visit?: string;
     contact_agent?: string;
   };
+  appointmentsDict: any;
+  userRole: string | null;
+  viewerId: string | null;
+  propertyId: string;
+  propertyTitle: string;
 }
 
-export function AgentCard({ agent, dict }: AgentCardProps) {
+export function AgentCard({ agent, dict, appointmentsDict, userRole, viewerId, propertyId, propertyTitle }: AgentCardProps) {
   const [imgError, setImgError] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const avatarSrc = imgError
     ? getAvatarFallback(agent.full_name)
@@ -64,12 +72,27 @@ export function AgentCard({ agent, dict }: AgentCardProps) {
       </div>
 
       <div className="space-y-3">
-        <button className="w-full bg-mosque hover:bg-primary-hover text-white py-4 px-6 rounded-lg font-medium transition-all shadow-lg shadow-mosque/20 flex items-center justify-center gap-2 group">
-          <span className="material-icons text-xl group-hover:scale-110 transition-transform">
-            calendar_today
-          </span>
-          {dict.schedule_visit}
-        </button>
+        {userRole === "viewer" && (
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="w-full bg-mosque hover:bg-primary-hover text-white py-4 px-6 rounded-lg font-medium transition-all shadow-lg shadow-mosque/20 flex items-center justify-center gap-2 group"
+          >
+            <span className="material-icons text-xl group-hover:scale-110 transition-transform">
+              calendar_today
+            </span>
+            {dict.schedule_visit}
+          </button>
+        )}
+
+        <AppointmentModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          propertyId={propertyId}
+          propertyTitle={propertyTitle}
+          agentId={agent.id || null}
+          viewerId={viewerId}
+          dict={{ ...dict, appointments: appointmentsDict }}
+        />
         {agent.email ? (
           <a
             href={`mailto:${agent.email}`}

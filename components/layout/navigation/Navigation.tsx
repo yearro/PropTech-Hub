@@ -36,8 +36,28 @@ export function Navigation({ dict, lang }: NavigationProps) {
   const [navbarTitle, setNavbarTitle] = useState("LuxeEstate");
   const [logoIcon, setLogoIcon] = useState("apartment");
   const [settingsLoading, setSettingsLoading] = useState(true);
+  const [pendingCount, setPendingCount] = useState(0);
   const pathname = usePathname();
   const router = useRouter();
+
+  const fetchPendingCount = async (userId: string, userRole: string) => {
+    let query = supabase
+      .from("appointments")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "pending");
+
+    if (userRole === "viewer") {
+      setPendingCount(0);
+      return;
+    }
+
+    if (userRole !== "admin") {
+      query = query.eq("agent_id", userId);
+    }
+
+    const { count } = await query;
+    setPendingCount(count || 0);
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -48,10 +68,13 @@ export function Navigation({ dict, lang }: NavigationProps) {
           .select("role")
           .eq("id", session.user.id)
           .single()
-          .then(({ data }) => setRole(data?.role ?? 'viewer'));
+          .then(({ data }) => {
+            const userRole = data?.role ?? 'viewer';
+            setRole(userRole);
+            fetchPendingCount(session.user.id, userRole);
+          });
       }
     });
-
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -62,9 +85,14 @@ export function Navigation({ dict, lang }: NavigationProps) {
           .select("role")
           .eq("id", session.user.id)
           .single()
-          .then(({ data }) => setRole(data?.role ?? 'viewer'));
+          .then(({ data }) => {
+            const userRole = data?.role ?? 'viewer';
+            setRole(userRole);
+            fetchPendingCount(session.user.id, userRole);
+          });
       } else {
         setRole(null);
+        setPendingCount(0);
       }
     });
 
@@ -113,13 +141,21 @@ export function Navigation({ dict, lang }: NavigationProps) {
               <LanguageSelector currentLang={lang} />
             </div>
             
-            <button className="text-nordic-dark hover:text-mosque transition-colors">
-              <span className="material-icons">search</span>
-            </button>
-            <button className="text-nordic-dark hover:text-mosque transition-colors relative">
-              <span className="material-icons">notifications_none</span>
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-background-light"></span>
-            </button>
+            {pendingCount > 0 ? (
+              <Link 
+                href={`/${lang}/admin/appointments`}
+                className="text-nordic-dark hover:text-mosque transition-colors relative flex items-center"
+              >
+                <span className="material-icons">notifications_none</span>
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full border-2 border-background-light flex items-center justify-center animate-bounce">
+                  {pendingCount}
+                </span>
+              </Link>
+            ) : (
+              <div className="text-nordic-dark/30 cursor-not-allowed flex items-center" title="No pending notifications">
+                <span className="material-icons">notifications_none</span>
+              </div>
+            )}
             
             {user ? (
               <div className="relative border-l border-nordic-dark/10 ml-2 pl-2">

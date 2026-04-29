@@ -107,6 +107,7 @@
       "properties": "Properties",
       "users": "Users",
       "favorites": "Favorites",
+      "appointments": "Appointments",
       "themes": "Themes",
       "profile": "My Profile",
       "session": "Session",
@@ -297,5 +298,33 @@
       "success": "Profile updated successfully!",
       "error": "Error updating profile."
     }
+  },
+  "appointments": {
+    "title": "Appointments & Visits",
+    "subtitle": "Manage visit requests for your properties.",
+    "schedule_title": "Schedule a Visit",
+    "schedule_subtitle": "Select a date and time to visit this property.",
+    "date": "Date",
+    "time": "Time",
+    "notes": "Additional notes (optional)",
+    "submit": "Request Appointment",
+    "submitting": "Sending...",
+    "success": "Request sent successfully!",
+    "error": "Error sending request.",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "actions": "Actions",
+    "accept": "Accept",
+    "reject": "Reject",
+    "empty_title": "No scheduled appointments",
+    "empty_subtitle": "Visit requests will appear here.",
+    "property": "Property",
+    "client": "Client",
+    "agent": "Agent",
+    "status": "Status",
+    "view_details": "View details",
+    "confirm_reject": "Are you sure you want to reject this appointment?",
+    "confirm_accept": "Do you want to accept this appointment request?"
   }
 }

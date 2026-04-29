@@ -71,7 +71,7 @@
     "view_photos": "Ver las {count} fotos",
     "meta_description": "Ver detalles de {title} ubicada en {location}. Precio: ${price}",
     "about_p1": "Experimente el lujo moderno en esta impresionante propiedad ubicada en {location}. Diseñado con énfasis en la comodidad y la vida elegante, este {type} ofrece una luz natural excepcional y acabados de alta gama.",
-    "about_p2": "El diseño de concepto abierto es perfecto para los estilos de vida contemporáneos. Retírese a la suite principal, un santuario de relajación con amenidades modernas y detalles sofisticados. Esta es una oportunidad inigualable para disfrutar de una vida premium."
+    "about_p2": "El diseño de concepto abierto es perfecto para los estilos de vida contemporáneos. Retírece a la suite principal, un santuario de relajación con amenidades modernas y detalles sofisticados. Esta es una oportunidad inigualable para disfrutar de una vida premium."
   },
   "common": {
     "sqm": "m²",
@@ -107,6 +107,7 @@
       "properties": "Propiedades",
       "users": "Usuarios",
       "favorites": "Favoritos",
+      "appointments": "Citas",
       "themes": "Temas",
       "profile": "Mi Perfil",
       "session": "Sesión",
@@ -297,5 +298,33 @@
       "success": "¡Perfil actualizado correctamente!",
       "error": "Error al actualizar el perfil."
     }
+  },
+  "appointments": {
+    "title": "Citas y Visitas",
+    "subtitle": "Gestiona las solicitudes de visita a tus propiedades.",
+    "schedule_title": "Agendar una Visita",
+    "schedule_subtitle": "Selecciona una fecha y hora para visitar esta propiedad.",
+    "date": "Fecha",
+    "time": "Hora",
+    "notes": "Notas adicionales (opcional)",
+    "submit": "Solicitar Cita",
+    "submitting": "Enviando...",
+    "success": "¡Solicitud enviada correctamente!",
+    "error": "Error al enviar la solicitud.",
+    "pending": "Pendiente",
+    "accepted": "Aceptada",
+    "rejected": "Rechazada",
+    "actions": "Acciones",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "empty_title": "No hay citas programadas",
+    "empty_subtitle": "Las solicitudes de visita aparecerán aquí.",
+    "property": "Propiedad",
+    "client": "Cliente",
+    "agent": "Agente",
+    "status": "Estado",
+    "view_details": "Ver detalles",
+    "confirm_reject": "¿Seguro que quieres rechazar esta cita?",
+    "confirm_accept": "¿Quieres aceptar esta solicitud de cita?"
   }
 }

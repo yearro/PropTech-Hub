@@ -54,6 +54,17 @@ export default async function PropertyDetails({ params }: Props) {
     notFound();
   }
 
+  const { data: { user } } = await supabase.auth.getUser();
+  let userRole = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    userRole = profile?.role;
+  }
+
   // Handle camelCase mapping vs raw db snake_case
   const property: Property = {
     ...data,
@@ -86,7 +97,15 @@ export default async function PropertyDetails({ params }: Props) {
                 </div>
                 <div className="h-px bg-slate-100 my-6"></div>
                 {property.agent && (
-                  <AgentCard agent={property.agent} dict={dict.property_details} />
+                  <AgentCard 
+                    agent={property.agent} 
+                    dict={dict.property_details} 
+                    appointmentsDict={dict.appointments}
+                    userRole={userRole}
+                    viewerId={user?.id || null}
+                    propertyId={property.id}
+                    propertyTitle={property.title}
+                  />
                 )}
                 {!property.agent && (
                   <div className="space-y-3">
