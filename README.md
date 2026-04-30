@@ -1,4 +1,4 @@
-# LuxeEstate - Premium PropTech Platform
+# PropTech-Hub - Premium PropTech Platform
 
 [Spanish Version](#versión-en-español) | [English Version](#english-version)
 
@@ -6,7 +6,7 @@
 
 ## Versión en Español
 
-LuxeEstate es una plataforma inmobiliaria de lujo diseñada para ofrecer una experiencia premium tanto a agentes como a clientes. Construida con tecnologías modernas, permite la gestión eficiente de propiedades, citas y perfiles de usuario en un entorno multilingüe y multi-moneda.
+PropTech-Hub es una plataforma inmobiliaria de lujo diseñada para ofrecer una experiencia premium tanto a agentes como a clientes. Construida con tecnologías modernas, permite la gestión eficiente de propiedades, citas y perfiles de usuario en un entorno multilingüe y multi-moneda.
 
 ### 🚀 Reseña de Funcionalidades
 
@@ -48,7 +48,7 @@ LuxeEstate es una plataforma inmobiliaria de lujo diseñada para ofrecer una exp
 
 ## English Version
 
-LuxeEstate is a luxury real estate platform designed to provide a premium experience for both agents and clients. Built with modern technologies, it enables efficient management of properties, appointments, and user profiles in a multilingual and multi-currency environment.
+PropTech-Hub is a luxury real estate platform designed to provide a premium experience for both agents and clients. Built with modern technologies, it enables efficient management of properties, appointments, and user profiles in a multilingual and multi-currency environment.
 
 ### 🚀 Feature Overview
 
@@ -96,4 +96,4 @@ LuxeEstate is a luxury real estate platform designed to provide a premium experi
 *   **Maps**: Leaflet / React Leaflet.
 
 ## 📄 License / Licencia
-This project is private and for the exclusive use of **LuxeEstate**. / Este proyecto es privado y para uso exclusivo de **LuxeEstate**.
+This project is private and for the exclusive use of **PropTech-Hub**. / Este proyecto es privado y para uso exclusivo de **PropTech-Hub**.
