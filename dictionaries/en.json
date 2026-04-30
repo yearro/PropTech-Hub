@@ -71,7 +71,16 @@
     "view_photos": "View All {count} Photos",
     "meta_description": "View details for {title} located at {location}. Price: ${price}",
     "about_p1": "Experience modern luxury in this stunning property located at {location}. Designed with an emphasis on comfort and elegant living, this {type} offers exceptional natural light and high-end finishes.",
-    "about_p2": "The open-concept design is perfect for contemporary lifestyles. Retreat to the primary suite, a sanctuary of relaxation featuring modern amenities and sophisticated details. This is an unmatched opportunity to enjoy premium living."
+    "about_p2": "The open-concept design is perfect for contemporary lifestyles. Retreat to the primary suite, a sanctuary of relaxation featuring modern amenities and sophisticated details. This is an unmatched opportunity to enjoy premium living.",
+    "mortgage_calculator": "Mortgage Calculator",
+    "loan_amount": "Loan Amount",
+    "down_payment": "Down Payment",
+    "term": "Term",
+    "interest_rate": "Interest Rate",
+    "years": "Years",
+    "monthly_payment": "Monthly Payment",
+    "property_value": "Property Value",
+    "currency": "Currency"
   },
   "common": {
     "sqm": "m²",

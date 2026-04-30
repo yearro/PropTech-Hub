@@ -91,7 +91,8 @@ export default async function Home(props: {
     isFeatured: p.is_featured,
     tag: p.tag,
     type: p.type,
-    slug: p.slug
+    slug: p.slug,
+    currency: p.currency || 'USD'
   });
 
   const featuredProperties = (featuredData || []).map(mapProperty);

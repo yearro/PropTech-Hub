@@ -2,6 +2,7 @@ import { Property } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { FavoriteButton } from "@/components/ui/FavoriteButton";
+import { getCurrencyByCode } from "@/config/currencies";
 
 export function PropertyCard({ property, lang, dict }: { property: Property; lang: string; dict: any }) {
   return (
@@ -33,7 +34,9 @@ export function PropertyCard({ property, lang, dict }: { property: Property; lan
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex justify-between items-baseline mb-2">
           <h3 className="font-bold text-lg text-nordic-dark">
-            ${property.price.toLocaleString()}
+            {getCurrencyByCode(property.currency).symbol}
+            {property.price.toLocaleString()}
+            {property.currency && property.currency !== 'USD' && <span className="ml-1 text-[10px] font-bold text-mosque uppercase">{property.currency}</span>}
             {property.type === "FOR RENT" ? <span className="text-sm font-normal text-nordic-muted">{dict.common.per_month}</span> : ""}
           </h3>
         </div>

@@ -9,6 +9,7 @@ import { supabase } from "@/utils/supabase";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Locale } from "@/lib/i18n/config";
 import { getAvatarFallback } from "@/utils/avatarFallback";
+import { SUPPORTED_CURRENCIES, getCurrencyByCode } from "@/config/currencies";
 
 const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
@@ -51,6 +52,7 @@ interface PropertyForm {
   is_active: boolean;
   amenities: string[];
   agent_id: string;
+  currency: string;
 }
 
 const defaultForm: PropertyForm = {
@@ -73,6 +75,7 @@ const defaultForm: PropertyForm = {
   is_active: true,
   amenities: [],
   agent_id: "",
+  currency: 'USD',
 };
 
 export default function PropertyFormPage(props: {
@@ -177,6 +180,7 @@ export default function PropertyFormPage(props: {
         is_active: data.is_active ?? true,
         amenities: data.amenities ?? [],
         agent_id: data.agent_id ?? "",
+        currency: data.currency ?? 'USD',
       });
       setCharCount((data.description ?? "").length);
 
@@ -367,6 +371,7 @@ export default function PropertyFormPage(props: {
       amenities: form.amenities,
       images: imageUrls,
       agent_id: form.agent_id || null,
+      currency: form.currency,
     };
 
     let error;
@@ -515,30 +520,49 @@ export default function PropertyFormPage(props: {
               </div>
 
               {/* Price + Status + Type */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <label
-                    className="block text-sm font-medium text-nordic mb-1.5 font-sf-pro"
-                    htmlFor="prop-price"
-                  >
-                    {t.price} <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-sf-pro text-sm">
-                      $
-                    </span>
-                    <input
-                      id="prop-price"
-                      type="number"
-                      min="0"
-                      required
-                      value={form.price}
-                      onChange={(e) => setField("price", e.target.value)}
-                      placeholder="0.00"
-                      className="w-full pl-7 pr-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic placeholder-gray-400 focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-base font-medium font-sf-pro outline-none"
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div>
+                    <label
+                      className="block text-sm font-medium text-nordic mb-1.5 font-sf-pro"
+                      htmlFor="prop-price"
+                    >
+                      {t.price} <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-sf-pro text-sm">
+                        {getCurrencyByCode(form.currency).symbol}
+                      </span>
+                      <input
+                        id="prop-price"
+                        type="number"
+                        min="0"
+                        required
+                        value={form.price}
+                        onChange={(e) => setField("price", e.target.value)}
+                        placeholder="0.00"
+                        className="w-full pl-7 pr-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic placeholder-gray-400 focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-base font-medium font-sf-pro outline-none"
+                      />
+                    </div>
                   </div>
-                </div>
+
+                  <div>
+                    <label
+                      className="block text-sm font-medium text-nordic mb-1.5 font-sf-pro"
+                      htmlFor="prop-currency"
+                    >
+                      {lang === 'es' ? 'Moneda' : 'Currency'}
+                    </label>
+                    <select
+                      id="prop-currency"
+                      value={form.currency}
+                      onChange={(e) => setField("currency", e.target.value as any)}
+                      className="w-full px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-base font-sf-pro cursor-pointer outline-none font-bold"
+                    >
+                      {SUPPORTED_CURRENCIES.map(c => (
+                        <option key={c.code} value={c.code}>{c.code} ({c.symbol})</option>
+                      ))}
+                    </select>
+                  </div>
 
                 <div>
                   <label

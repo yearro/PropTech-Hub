@@ -12,6 +12,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Locale } from "@/lib/i18n/config";
 
 import { PropertySidebar } from "@/components/properties/PropertySidebar";
+import { MortgageCalculator } from "@/components/properties/MortgageCalculator";
 
 // Next.js 15 requires awaiting params
 type Props = {
@@ -145,22 +146,8 @@ export default async function PropertyDetails({ params }: Props) {
               </div>
             </div>
             
-            <div className="bg-mosque/5 p-6 rounded-xl border border-mosque/10 flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-white rounded-full text-mosque shadow-sm">
-                  <span className="material-icons">calculate</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-nordic-dark">{dict.property_details.estimated_payment}</h3>
-                  <p className="text-sm text-nordic-dark/60">
-                    {dict.property_details.starting_from} <strong className="text-mosque">${Math.round(property.price * 0.005).toLocaleString()}{dict.common.per_month}</strong> {dict.property_details.with_down}
-                  </p>
-                </div>
-              </div>
-              <button className="whitespace-nowrap px-4 py-2 bg-white border border-nordic-dark/10 rounded-lg text-sm font-semibold hover:border-mosque transition-colors text-nordic-dark shadow-sm">
-                {dict.property_details.calculate_mortgage}
-              </button>
-            </div>
+            <MortgageCalculator propertyPrice={property.price} propertyCurrency={property.currency} dict={dict} lang={lang} />
+
           </div>
         </div>
       </main>

@@ -71,7 +71,16 @@
     "view_photos": "Ver las {count} fotos",
     "meta_description": "Ver detalles de {title} ubicada en {location}. Precio: ${price}",
     "about_p1": "Experimente el lujo moderno en esta impresionante propiedad ubicada en {location}. Diseñado con énfasis en la comodidad y la vida elegante, este {type} ofrece una luz natural excepcional y acabados de alta gama.",
-    "about_p2": "El diseño de concepto abierto es perfecto para los estilos de vida contemporáneos. Retírece a la suite principal, un santuario de relajación con amenidades modernas y detalles sofisticados. Esta es una oportunidad inigualable para disfrutar de una vida premium."
+    "about_p2": "El diseño de concepto abierto es perfecto para los estilos de vida contemporáneos. Retírece a la suite principal, un santuario de relajación con amenidades modernas y detalles sofisticados. Esta es una oportunidad inigualable para disfrutar de una vida premium.",
+    "mortgage_calculator": "Calculadora de Hipoteca",
+    "loan_amount": "Monto del Préstamo",
+    "down_payment": "Enganche",
+    "term": "Plazo",
+    "interest_rate": "Tasa de Interés",
+    "years": "Años",
+    "monthly_payment": "Pago Mensual",
+    "property_value": "Valor de la Propiedad",
+    "currency": "Moneda"
   },
   "common": {
     "sqm": "m²",

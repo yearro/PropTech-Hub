@@ -6,6 +6,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Locale } from "@/lib/i18n/config";
 import Image from "next/image";
 import Link from "next/link";
+import { getCurrencyByCode } from "@/config/currencies";
 
 // ─── Filter state ────────────────────────────────────────────────────────────
 interface Filters {
@@ -149,7 +150,7 @@ export default function AdminPropertiesPage(props: {
     try {
       let query = supabase
         .from("properties")
-        .select("id, title, location, price, beds, baths, area, images, type, status, is_active, agent_id", {
+        .select("id, title, location, price, beds, baths, area, images, type, status, is_active, agent_id, currency", {
           count: "exact",
         });
 
@@ -643,7 +644,8 @@ export default function AdminPropertiesPage(props: {
                 {/* Price */}
                 <div className="col-span-6 md:col-span-2">
                   <div className="text-base font-black text-nordic-dark dark:text-white">
-                    ${Number(property.price).toLocaleString()}
+                    {getCurrencyByCode(property.currency).symbol}{Number(property.price).toLocaleString()}
+                    {property.currency !== 'USD' && <span className="ml-1 text-[10px] text-gray-400 font-bold">{property.currency}</span>}
                   </div>
                   <div className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mt-0.5">
                     EST. VALUE

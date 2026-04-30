@@ -1,3 +1,5 @@
+import { CurrencyCode } from "@/config/currencies";
+
 export interface Profile {
   id: string;
   email: string | null;
@@ -24,4 +26,5 @@ export interface Property {
   images: string[];
   agent_id?: string;
   agent?: Profile;
+  currency: CurrencyCode;
 }

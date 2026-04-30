@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabase";
 import { AgentCard } from "./AgentCard";
-
 import { LazyMap } from "./LazyMap";
+import { getCurrencyByCode } from "@/config/currencies";
 
 interface PropertySidebarProps {
   property: any;
@@ -41,7 +41,11 @@ export function PropertySidebar({ property, dict, lang }: PropertySidebarProps) 
       <div className="bg-white p-6 rounded-xl shadow-sm border border-mosque/5">
         <div className="mb-4">
           <h1 className="text-4xl font-display font-light text-nordic-dark mb-2">
-            ${property.price.toLocaleString()}
+            {getCurrencyByCode(property.currency).symbol}
+            {property.price.toLocaleString()}
+            {property.currency && property.currency !== 'USD' && (
+              <span className="text-xl text-mosque font-bold ml-1 uppercase">{property.currency}</span>
+            )}
             {property.type === "FOR RENT" ? (
               <span className="text-xl text-nordic-muted">{dict.common.per_month}</span>
             ) : (
